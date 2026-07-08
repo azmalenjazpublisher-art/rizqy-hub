@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحرف اليدوية - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 25px;
+            right: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .back-btn:hover { background: var(--primary-color); color: white; }
+
+        .container {
+            max-width: 1200px;
+            margin: 80px auto 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .category-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .category-header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .category-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 30px;
+            justify-items: center;
+        }
+
+        .product-item {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+        }
+
+        .product-item img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background-color: #f4f1eb;
+        }
+
+        .product-info {
+            padding: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-info h3 {
+            font-size: 18px;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .product-info .price {
+            font-size: 20px;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin: auto 0;
+        }
+
+        .product-info .producer {
+            font-size: 13px;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        .add-to-cart {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 15px;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        .add-to-cart:hover { background: #3b4d32; }
+
+        .chat-btn {
+            width: 100%;
+            padding: 10px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            margin-top: 10px;
+            border-radius: 8px;
+            transition: background 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .chat-btn:hover { background: #b89559; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin-top: 100px; }
+            .category-header h1 { font-size: 24px; }
+            .products-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+            .product-item img { height: 200px; }
+        }
+        
+        .loading-msg {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+            grid-column: 1 / -1;
+        }
+
+        /* إشعار الإضافة للسلة */
+        .toast-notification {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 500;
+            z-index: 1000;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← العودة للرئيسية</a>
+
+    <div class="container">
+        <div class="category-header">
+            <h1>🎨 الحرف اليدوية</h1>
+            <p>تحف وإكسسوارات يدوية الصنع بإتقان</p>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <p class="loading-msg">🔄 جاري تحميل المنتجات...</p>
+        </div>
+    </div>
+
+    <script>
+    // 📦 قائمة منتجات الحرف اليدوية
+    const handicraftProducts = [
+        {
+            id: 1,
+            name: 'ورشة فخار تقليدية',
+            description: 'تشكيلة من الأواني الطينية والأطباق والبلاط المزخرف بإضاءة طبيعية دافئة',
+            price: 150.00,
+            image: 'handicraft-01.webp',
+            producer_id: 1,
+            producer: 'أسرة المنتجة',
+            category: 'handicrafts'
+        },
+        {
+            id: 2,
+            name: 'تشكيلة إكسسوارات أنيقة',
+            description: 'نظارة شمسية وساعة يد ومجوهرات ذهبية مرتبة على صينية حجرية',
+            price: 280.00,
+            image: 'handicraft-02.webp',
+            producer_id: 1,
+            producer: 'أسرة المنتجة',
+            category: 'handicrafts'
+        },
+        {
+            id: 3,
+            name: 'سلال وأواني منزلية منسوجة',
+            description: 'سلال وأواني منسوجة من الخوص بأحجام مختلفة على مفرشات ذات نقوش هندسية',
+            price: 95.00,
+            image: 'handicraft-03.webp',
+            producer_id: 1,
+            producer: 'أسرة المنتجة',
+            category: 'handicrafts'
+        },
+        {
+            id: 4,
+            name: 'زاوية ديكور شرقية تقليدية',
+            description: 'بلاط خزفي ملون ونوافذ خشبية مفرغة (مشربية) وأواني نحاسية',
+            price: 320.00,
+            image: 'handicraft-04.webp',
+            producer_id: 1,
+            producer: 'أسرة المنتجة',
+            category: 'handicrafts'
+        },
+        {
+            id: 5,
+            name: 'طقم ضيافة تراثي نحاسي',
+            description: 'دلة ومجامر وصندوق مزخرف على صينية كبيرة محاطة بأغصان الزيتون',
+            price: 450.00,
+            image: 'handicraft-05.webp',
+            producer_id: 1,
+            producer: 'أسرة المنتجة',
+            category: 'handicrafts'
+        }
+    ];
+
+    //  دالة إضافة منتج للسلة
+    function addToCart(product) {
+        const cartKey = 'rizqy_cart';
+        let cart = [];
+        
+        try {
+            const saved = localStorage.getItem(cartKey);
+            cart = saved ? JSON.parse(saved) : [];
+            if (!Array.isArray(cart)) cart = [];
+        } catch (e) {
+            cart = [];
+        }
+
+        // توحيد هيكل البيانات
+        const productData = {
+            id: String(product.id),
+            name: product.name,
+            price: parseFloat(product.price),
+            image: product.image ? `images/products/${product.image}` : 'images/categories/cat-handicrafts.webp',
+            producer: product.producer || 'أسرة المنتجة',
+            producer_id: product.producer_id || '',
+            category: product.category || 'handicrafts'
+        };
+
+        // البحث عن منتج موجود
+        const existingIndex = cart.findIndex(item => String(item.id) === productData.id);
+        
+        if (existingIndex > -1) {
+            cart[existingIndex].quantity += 1;
+        } else {
+            cart.push({ ...productData, quantity: 1 });
+        }
+
+        // حفظ السلة
+        localStorage.setItem(cartKey, JSON.stringify(cart));
+        
+        // تحديث الشارة في جميع الصفحات
+        localStorage.setItem('rizq_cart_sync', Date.now().toString());
+        
+        // إظهار إشعار
+        showToast(`✅ تمت إضافة "${product.name}" للسلة`);
+        
+        console.log('🛒 تم الإضافة للسلة:', productData);
+        console.log('📦 محتويات السلة الآن:', cart);
+    }
+
+    // 🎯 إظهار إشعار
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transition = 'opacity 0.3s';
+            setTimeout(() => toast.remove(), 300);
+        }, 2500);
+    }
+
+    // 🎴 دالة عرض المنتجات
+    function displayProducts() {
+        const gridContainer = document.getElementById('productsGrid');
+        
+        try {
+            if (handicraftProducts.length === 0) {
+                gridContainer.innerHTML = '<p style="text-align:center; width:100%; padding:40px; color:#666; font-size:18px;">🌱 لا توجد منتجات في هذا القسم حالياً</p>';
+                return;
+            }
+
+            gridContainer.innerHTML = '';
+
+            handicraftProducts.forEach(product => {
+                const imageUrl = `images/products/${product.image}`;
+                const producerId = product.producer_id || '';
+                
+                const card = document.createElement('div');
+                card.className = 'product-item';
+                
+                // تحويل المنتج إلى JSON لاستخدامه في onclick
+                const productJson = JSON.stringify(product).replace(/"/g, '&quot;');
+                
+                card.innerHTML = `
+                    <img src="${imageUrl}" alt="${product.name}" onerror="this.src='images/categories/cat-handicrafts.webp'; this.alt='صورة غير متوفرة';">
+                    <div class="product-info">
+                        <h3>${product.name}</h3>
+                        <p style="font-size:13px; color:#666; margin:5px 0; min-height:40px;">
+                            ${product.description ? product.description.substring(0, 60) + (product.description.length > 60 ? '...' : '') : 'بدون وصف'}
+                        </p>
+                        <div class="price">${product.price.toFixed(2)} ر.س</div>
+                        <button class="add-to-cart" onclick='addToCart(${productJson})'>➕ أضف للسلة</button>
+                        ${producerId ? `<a href="chat.html?producer_id=${producerId}" class="chat-btn">💬 تواصل مع البائع</a>` : ''}
+                    </div>
+                `;
+                gridContainer.appendChild(card);
+            });
+            
+        } catch (error) {
+            console.error('❌ خطأ في عرض المنتجات:', error);
+            gridContainer.innerHTML = `
+                <div style="text-align:center; padding:40px; color:#d9534f;">
+                    <p style="font-size:18px; margin-bottom:10px;">⚠️ حدث خطأ أثناء تحميل المنتجات</p>
+                    <p style="font-size:14px; color:#666;">${error.message}</p>
+                </div>`;
+        }
+    }
+
+    // 🚀 تشغيل الدالة عند تحميل الصفحة
+    window.addEventListener('load', displayProducts);
+    </script>
+</body>
+</html>

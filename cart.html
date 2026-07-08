@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سلة المشتريات - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 25px;
+            right: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .back-btn:hover { background: var(--primary-color); color: white; }
+
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .cart-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .cart-header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .cart-items { margin-bottom: 30px; }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+
+        .cart-item:hover {
+            transform: translateX(-5px);
+            background: #f0f0f0;
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #f4f1eb;
+        }
+
+        .item-details { flex: 1; }
+
+        .item-details h3 {
+            color: var(--text-dark);
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .item-details .price {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .item-details .producer {
+            color: #888;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: white;
+            border-radius: 8px;
+            padding: 5px;
+        }
+
+        .quantity-controls button {
+            width: 30px;
+            height: 30px;
+            border: none;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .quantity-controls button:hover { background: #3b4d32; }
+
+        .quantity-controls span {
+            font-weight: 700;
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .remove-btn {
+            background: #d9534f;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .remove-btn:hover { background: #c9302c; }
+
+        .cart-summary {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .cart-summary h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        .total-price {
+            font-size: 32px;
+            color: var(--accent-color);
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .checkout-btn {
+            width: 100%;
+            padding: 15px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .checkout-btn:hover { background: #3b4d32; }
+        .checkout-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+        .empty-cart {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-cart h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .empty-cart a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .empty-cart a:hover { background: #3b4d32; }
+
+        .cart-icon-badge {
+            position: fixed;
+            top: 25px;
+            left: 40px;
+            background: var(--accent-color);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .debug-info {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #856404;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .cart-item { flex-direction: column; text-align: center; }
+            .quantity-controls { margin: 10px 0; }
+            .container { padding: 20px; margin-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← العودة للرئيسية</a>
+    <a href="cart.html" class="cart-icon-badge" id="cartBadge" title="عرض السلة">0</a>
+
+    <div class="container">
+        <div class="cart-header">
+            <h1>🛒 سلة المشتريات</h1>
+            <p>راجع منتجاتك قبل إتمام الطلب</p>
+        </div>
+
+        <!-- معلومات التصحيح (مؤقتة) -->
+        <div class="debug-info" id="debugInfo"></div>
+
+        <div id="cartContent">
+            <p style="text-align: center; padding: 40px; color: #666;">🔄 جاري تحميل السلة...</p>
+        </div>
+    </div>
+
+    <script>
+        // 🛒 نظام سلة المشتريات المحسّن
+        class ShoppingCart {
+            constructor() {
+                this.cartKey = 'rizqy_cart';
+                this.cart = this.loadCart();
+                this.currentUser = this.getCurrentUser();
+                this.showDebugInfo();
+            }
+
+            getCurrentUser() {
+                try {
+                    const saved = localStorage.getItem('rizq_user');
+                    return saved ? JSON.parse(saved) : null;
+                } catch (e) {
+                    return null;
+                }
+            }
+
+            loadCart() {
+                try {
+                    const saved = localStorage.getItem(this.cartKey);
+                    const cart = saved ? JSON.parse(saved) : [];
+                    console.log('📦 تم تحميل السلة:', cart);
+                    return Array.isArray(cart) ? cart : [];
+                } catch (e) {
+                    console.error('❌ خطأ في تحميل السلة:', e);
+                    return [];
+                }
+            }
+
+            saveCart() {
+                try {
+                    localStorage.setItem(this.cartKey, JSON.stringify(this.cart));
+                    console.log('💾 تم حفظ السلة:', this.cart);
+                    this.updateBadge();
+                    this.syncBadgeAcrossTabs();
+                } catch (e) {
+                    console.error('❌ خطأ في حفظ السلة:', e);
+                }
+            }
+
+            // إضافة منتج للسلة - محسّنة
+            addProduct(product) {
+                console.log('➕ إضافة منتج:', product);
+                
+                // توحيد هيكل البيانات - محسّن
+                const productData = {
+                    id: String(product.id || product.product_id || Date.now()),
+                    name: product.name || product.product_name || 'منتج',
+                    price: parseFloat(product.price) || 0,
+                    image: this.getProductImage(product),
+                    producer: product.producer || product.producer_name || '',
+                    producer_id: product.producer_id || '',
+                    category: product.category || ''
+                };
+
+                console.log('📋 بيانات المنتج الموحدة:', productData);
+
+                // البحث عن منتج موجود بنفس الـ ID
+                const existingIndex = this.cart.findIndex(item => String(item.id) === productData.id);
+                
+                if (existingIndex > -1) {
+                    this.cart[existingIndex].quantity += 1;
+                    console.log('✅ تم زيادة الكمية');
+                } else {
+                    this.cart.push({ ...productData, quantity: 1 });
+                    console.log('✅ تم إضافة منتج جديد');
+                }
+                
+                this.saveCart();
+                this.showNotification('✅ تمت الإضافة للسلة');
+            }
+
+            // الحصول على مسار الصورة - محسّنة
+            getProductImage(product) {
+                // إذا كان هناك صورة مباشرة
+                if (product.image) {
+                    if (product.image.startsWith('http') || product.image.startsWith('data:')) {
+                        return product.image;
+                    }
+                    if (product.image.startsWith('images/')) {
+                        return product.image;
+                    }
+                    return `images/products/${product.image}`;
+                }
+                
+                // إذا كان هناك مصفوفة صور
+                if (product.images && product.images.length > 0) {
+                    const img = product.images[0];
+                    if (img.startsWith('http')) return img;
+                    return `images/products/${img}`;
+                }
+                
+                // صورة افتراضية
+                return 'images/categories/cat-food.webp';
+            }
+
+            increaseQuantity(productId) {
+                const item = this.cart.find(item => String(item.id) === String(productId));
+                if (item) {
+                    item.quantity += 1;
+                    this.saveCart();
+                    this.displayCart();
+                }
+            }
+
+            decreaseQuantity(productId) {
+                const item = this.cart.find(item => String(item.id) === String(productId));
+                if (item && item.quantity > 1) {
+                    item.quantity -= 1;
+                    this.saveCart();
+                    this.displayCart();
+                }
+            }
+
+            removeProduct(productId) {
+                if (confirm('هل تريد حذف هذا المنتج من السلة؟')) {
+                    this.cart = this.cart.filter(item => String(item.id) !== String(productId));
+                    this.saveCart();
+                    this.displayCart();
+                    this.showNotification('🗑️ تم الحذف من السلة');
+                }
+            }
+
+            getTotal() {
+                return this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            }
+
+            getItemCount() {
+                return this.cart.reduce((sum, item) => sum + item.quantity, 0);
+            }
+
+            updateBadge() {
+                const badge = document.getElementById('cartBadge');
+                if (!badge) return;
+                
+                const count = this.getItemCount();
+                badge.textContent = count;
+                badge.style.display = count > 0 ? 'flex' : 'none';
+            }
+
+            syncBadgeAcrossTabs() {
+                localStorage.setItem('rizq_cart_sync', Date.now().toString());
+            }
+
+            // عرض السلة - محسّنة
+            displayCart() {
+                const container = document.getElementById('cartContent');
+                if (!container) return;
+
+                console.log('🖼️ عرض السلة، عدد المنتجات:', this.cart.length);
+
+                if (this.cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="empty-cart">
+                            <h2>🛒 السلة فارغة</h2>
+                            <p>ابدأ التسوق الآن وأضف منتجاتك المفضلة من الأسر المنتجة</p>
+                            <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 20px;">
+                                <a href="food.html">🍯 المنتجات الغذائية</a>
+                                <a href="handicrafts.html">🎨 الحرف اليدوية</a>
+                                <a href="sewing.html">🧵 الخياطة والتطريز</a>
+                                <a href="personal-care.html">🧴 العناية الشخصية</a>
+                            </div>
+                        </div>
+                    `;
+                    this.updateBadge();
+                    return;
+                }
+
+                let html = '<div class="cart-items">';
+                
+                this.cart.forEach((item, index) => {
+                    const imageUrl = this.getProductImage(item);
+                    console.log(`🖼️ صورة المنتج ${index + 1}:`, imageUrl);
+                    
+                    html += `
+                        <div class="cart-item">
+                            <img src="${imageUrl}" alt="${item.name}" onerror="this.src='images/categories/cat-food.webp'">
+                            <div class="item-details">
+                                <h3>${item.name}</h3>
+                                <div class="price">${item.price.toFixed(2)} ر.س</div>
+                                ${item.producer ? `<div class="producer">🏠 ${item.producer}</div>` : ''}
+                            </div>
+                            <div class="quantity-controls">
+                                <button onclick="cart.decreaseQuantity('${item.id}')" title="تقليل">−</button>
+                                <span>${item.quantity}</span>
+                                <button onclick="cart.increaseQuantity('${item.id}')" title="زيادة">+</button>
+                            </div>
+                            <button class="remove-btn" onclick="cart.removeProduct('${item.id}')" title="حذف">🗑️</button>
+                        </div>
+                    `;
+                });
+                
+                html += '</div>';
+                
+                const total = this.getTotal();
+                const itemCount = this.getItemCount();
+                
+                html += `
+                    <div class="cart-summary">
+                        <h2>📋 ملخص الطلب</h2>
+                        <p style="color:#666; margin-bottom:10px;">عدد المنتجات: ${itemCount}</p>
+                        <div class="total-price">الإجمالي: ${total.toFixed(2)} ر.س</div>
+                        <p style="font-size:13px; color:#888; margin:15px 0;">
+                            💡 ملاحظة: الدفع يتم عند الاستلام أو عبر التواصل مع البائع
+                        </p>
+                        <button class="checkout-btn" id="checkoutBtn" onclick="checkout()">
+                            إتمام الطلب 🛍️
+                        </button>
+                    </div>
+                `;
+                
+                container.innerHTML = html;
+                this.updateBadge();
+            }
+
+            showNotification(message) {
+                const toast = document.createElement('div');
+                toast.style.cssText = `
+                    position: fixed;
+                    bottom: 30px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: var(--primary-color);
+                    color: white;
+                    padding: 12px 25px;
+                    border-radius: 30px;
+                    font-weight: 500;
+                    z-index: 1000;
+                    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+                `;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transition = 'opacity 0.3s';
+                    setTimeout(() => toast.remove(), 300);
+                }, 2500);
+            }
+
+            clearCart() {
+                this.cart = [];
+                this.saveCart();
+            }
+
+            // عرض معلومات التصحيح
+            showDebugInfo() {
+                const debugInfo = document.getElementById('debugInfo');
+                if (!debugInfo) return;
+
+                const savedCart = localStorage.getItem(this.cartKey);
+                const parsedCart = savedCart ? JSON.parse(savedCart) : [];
+                
+                debugInfo.innerHTML = `
+                    <strong>🔍 معلومات التصحيح:</strong><br>
+                    • عدد المنتجات في السلة: ${parsedCart.length}<br>
+                    • البيانات المخزنة: ${savedCart || 'لا يوجد'}<br>
+                    • المستخدم الحالي: ${this.currentUser ? this.currentUser.name : 'غير مسجل'}<br>
+                    <button onclick="document.getElementById('debugInfo').style.display='none'" style="margin-top:10px; padding:5px 10px; background:#856404; color:white; border:none; border-radius:5px; cursor:pointer;">إخفاء</button>
+                `;
+                debugInfo.style.display = 'block';
+            }
+        }
+
+        // إنشاء كائن السلة العالمي
+        const cart = new ShoppingCart();
+
+        // الاستماع لتحديثات السلة
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'rizq_cart_sync' || e.key === 'rizqy_cart') {
+                cart.cart = cart.loadCart();
+                cart.updateBadge();
+                if (window.location.pathname.includes('cart.html')) {
+                    cart.displayCart();
+                }
+            }
+        });
+
+        // دالة إتمام الطلب
+        async function checkout() {
+            if (cart.cart.length === 0) {
+                alert('⚠️ السلة فارغة!');
+                return;
+            }
+
+            const total = cart.getTotal();
+            const itemCount = cart.getItemCount();
+            
+            if (!cart.currentUser) {
+                if (confirm('⚠️ لإتمام الطلب، يجب تسجيل الدخول أولاً.\nهل تريد الانتقال لصفحة تسجيل الدخول؟')) {
+                    localStorage.setItem('rizq_checkout_pending', 'true');
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+
+            const confirmMsg = `
+📦 تأكيد الطلب
+━━━━━━━━━━━━━━
+🛍️ عدد المنتجات: ${itemCount}
+💰 الإجمالي: ${total.toFixed(2)} ر.س
+👤 العميل: ${cart.currentUser.name}
+━━━━━━━━━━━━━━
+هل تريد المتابعة؟
+            `;
+            
+            if (confirm(confirmMsg)) {
+                const btn = document.getElementById('checkoutBtn');
+                if (btn) {
+                    btn.disabled = true;
+                    btn.textContent = '🔄 جاري معالجة الطلب...';
+                }
+                
+                try {
+                    // حفظ الطلب في قاعدة البيانات
+                    await saveOrderToDatabase();
+                    
+                    alert('✅ تم استلام طلبك بنجاح!\n\n📱 سيتم التواصل معك قريباً لتأكيد التفاصيل.');
+                    
+                    // حفظ الطلب محلياً
+                    saveOrderLocally();
+                    
+                    // تفريغ السلة
+                    cart.clearCart();
+                    cart.displayCart();
+                    
+                } catch (error) {
+                    console.error('❌ خطأ في إتمام الطلب:', error);
+                    alert('⚠️ حدث خطأ أثناء معالجة الطلب.');
+                } finally {
+                    if (btn) {
+                        btn.disabled = false;
+                        btn.textContent = 'إتمام الطلب 🛍️';
+                    }
+                }
+            }
+        }
+
+        // حفظ الطلب في قاعدة البيانات
+        async function saveOrderToDatabase() {
+            if (!cart.currentUser) return;
+            
+            // هنا يمكنك إضافة كود حفظ الطلب في Supabase
+            console.log('📤 حفظ الطلب في قاعدة البيانات...');
+            
+            // مثال:
+            // const { data, error } = await supabaseClient.from('orders').insert([...]);
+        }
+
+        // حفظ الطلب محلياً
+        function saveOrderLocally() {
+            const orders = JSON.parse(localStorage.getItem('rizq_orders') || '[]');
+            orders.push({
+                id: Date.now(),
+                date: new Date().toLocaleString('ar-SA'),
+                items: [...cart.cart],
+                total: cart.getTotal(),
+                status: 'pending'
+            });
+            localStorage.setItem('rizq_orders', JSON.stringify(orders));
+        }
+
+        // عرض السلة عند تحميل الصفحة
+        window.addEventListener('load', () => {
+            cart.updateBadge();
+            cart.displayCart();
+        });
+
+        // دالة عالمية لإضافة منتج للسلة
+        window.addToCart = function(product) {
+            cart.addProduct(product);
+        };
+
+        // تحديث السلة عند العودة
+        window.addEventListener('pageshow', (e) => {
+            cart.cart = cart.loadCart();
+            cart.displayCart();
+        });
+    </script>
+</body>
+</html>

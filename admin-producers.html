@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إدارة الأسر المنتجة - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+            --success-color: #5cb85c;
+            --danger-color: #d9534f;
+            --warning-color: #f0ad4e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white !important;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            background: #3b4d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .container {
+            padding: 120px 40px 40px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-card.pending .number { color: var(--warning-color); }
+        .stat-card.approved .number { color: var(--success-color); }
+        .stat-card.rejected .number { color: var(--danger-color); }
+
+        .filters {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .producers-table-container {
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            overflow-x: auto;
+        }
+
+        .producers-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .producers-table th {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: right;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .producers-table td {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            font-size: 14px;
+        }
+
+        .producers-table tr:hover {
+            background: #f9f9f9;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.approved {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.rejected {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            margin: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn.approve {
+            background: var(--success-color);
+            color: white;
+        }
+
+        .action-btn.approve:hover {
+            background: #4cae4c;
+        }
+
+        .action-btn.reject {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .action-btn.reject:hover {
+            background: #c9302c;
+        }
+
+        .action-btn.view {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .action-btn.view:hover {
+            background: #b89559;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .doc-link {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .doc-link:hover {
+            text-decoration: underline;
+        }
+
+        .alert-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .alert-box.show { display: block; }
+        .alert-box.error { border-top: 5px solid #d9534f; }
+        .alert-box.success { border-top: 5px solid #5cb85c; }
+        .alert-box.warning { border-top: 5px solid #f0ad4e; }
+
+        .alert-box h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .alert-box button {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.show { display: block; }
+
+        @media (max-width: 768px) {
+            .navbar { right: 20px; gap: 10px; }
+            .container { padding: 100px 20px 20px; }
+            .producers-table { font-size: 12px; }
+            .producers-table th, .producers-table td { padding: 10px 8px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-btn">الرئيسية</a>
+        <a href="admin-dashboard.html" class="nav-btn">لوحة التحكم</a>
+        <button class="nav-btn" onclick="handleLogout()">تسجيل الخروج</button>
+    </nav>
+
+    <div class="container">
+        <div class="page-header">
+            <h1>👨‍👩‍‍👦 إدارة الأسر المنتجة</h1>
+            <p>مراجعة واعتماد طلبات تسجيل الأسر المنتجة</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>إجمالي الأسر</h3>
+                <div class="number" id="totalProducers">0</div>
+            </div>
+            <div class="stat-card pending">
+                <h3>بانتظار الموافقة</h3>
+                <div class="number" id="pendingProducers">0</div>
+            </div>
+            <div class="stat-card approved">
+                <h3>معتمدين</h3>
+                <div class="number" id="approvedProducers">0</div>
+            </div>
+            <div class="stat-card rejected">
+                <h3>مرفوضين</h3>
+                <div class="number" id="rejectedProducers">0</div>
+            </div>
+        </div>
+
+        <div class="filters">
+            <div class="filter-group">
+                <label>بحث بالاسم أو البريد</label>
+                <input type="text" id="searchInput" placeholder="ابحث..." onkeyup="filterProducers()">
+            </div>
+            <div class="filter-group">
+                <label>حالة الموافقة</label>
+                <select id="statusFilter" onchange="filterProducers()">
+                    <option value="all">الكل</option>
+                    <option value="pending">بانتظار الموافقة</option>
+                    <option value="approved">معتمدين</option>
+                    <option value="rejected">مرفوضين</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="producers-table-container">
+            <table class="producers-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>الاسم</th>
+                        <th>البريد الإلكتروني</th>
+                        <th>رقم الجوال</th>
+                        <th>الوثيقة</th>
+                        <th>الحالة</th>
+                        <th>تاريخ التسجيل</th>
+                        <th>الإجراءات</th>
+                    </tr>
+                </thead>
+                <tbody id="producersTableBody">
+                </tbody>
+            </table>
+            <div class="no-data" id="noData" style="display: none;">
+                لا يوجد أسر منتجة مسجلة
+            </div>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="alert-box" id="alertBox">
+        <h3 id="alertTitle">تنبيه</h3>
+        <p id="alertMessage"></p>
+        <button onclick="closeAlert()">حسناً</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = 'https://yzqahzwqwcxypryzarxk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_qW1pvyy3MogDo5ZgK8JQQQ_w3mO0phv';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let allProducers = [];
+
+        window.addEventListener('load', async function() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (!session) {
+                showAlert('warning', '⚠️ يجب تسجيل الدخول');
+                setTimeout(() => window.location.href = 'login.html', 2000);
+                return;
+            }
+
+            const { data: userData } = await supabaseClient
+                .from('users')
+                .select('role')
+                .eq('id', session.user.id)
+                .single();
+
+            if (!userData || userData.role !== 'admin') {
+                showAlert('error', '❌ ليس لديك صلاحيات');
+                setTimeout(() => window.location.href = 'index.html', 2000);
+                return;
+            }
+
+            await loadProducers();
+        });
+
+        async function loadProducers() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('role', 'producer')
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allProducers = data || [];
+                updateStats();
+                renderProducers(allProducers);
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'حدث خطأ في تحميل البيانات');
+            }
+        }
+
+        function updateStats() {
+            const total = allProducers.length;
+            const pending = allProducers.filter(p => !p.is_approved).length;
+            const approved = allProducers.filter(p => p.is_approved === true).length;
+            const rejected = allProducers.filter(p => p.is_approved === false).length;
+
+            document.getElementById('totalProducers').textContent = total;
+            document.getElementById('pendingProducers').textContent = pending;
+            document.getElementById('approvedProducers').textContent = approved;
+            document.getElementById('rejectedProducers').textContent = rejected;
+        }
+
+        function renderProducers(producers) {
+            const tbody = document.getElementById('producersTableBody');
+            const noData = document.getElementById('noData');
+
+            if (producers.length === 0) {
+                tbody.innerHTML = '';
+                noData.style.display = 'block';
+                return;
+            }
+
+            noData.style.display = 'none';
+            tbody.innerHTML = producers.map((producer, index) => `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${producer.full_name || '-'}</strong></td>
+                    <td>${producer.email || '-'}</td>
+                    <td>${producer.phone || '-'}</td>
+                    <td>
+                        ${producer.doc_url ? 
+                            `<a href="${producer.doc_url}" target="_blank" class="doc-link">📄 عرض الوثيقة</a>` : 
+                            'لا توجد'
+                        }
+                    </td>
+                    <td>
+                        <span class="status-badge ${getStatusClass(producer)}">
+                            ${getStatusText(producer)}
+                        </span>
+                    </td>
+                    <td>${formatDate(producer.created_at)}</td>
+                    <td>
+                        ${producer.is_approved === null || producer.is_approved === undefined || producer.is_approved === false ? `
+                            <button class="action-btn approve" onclick="approveProducer('${producer.id}')">✓ اعتماد</button>
+                            <button class="action-btn reject" onclick="rejectProducer('${producer.id}')">✗ رفض</button>
+                        ` : ''}
+                        <button class="action-btn view" onclick="viewProducer('${producer.id}')">👁 عرض</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function getStatusText(producer) {
+            if (producer.is_approved === true) return 'معتمد';
+            if (producer.is_approved === false) return 'مرفوض';
+            return 'بانتظار الموافقة';
+        }
+
+        function getStatusClass(producer) {
+            if (producer.is_approved === true) return 'approved';
+            if (producer.is_approved === false) return 'rejected';
+            return 'pending';
+        }
+
+        function formatDate(dateString) {
+            return new Date(dateString).toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        function filterProducers() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('statusFilter').value;
+
+            const filtered = allProducers.filter(producer => {
+                const matchesSearch = 
+                    (producer.full_name && producer.full_name.toLowerCase().includes(searchTerm)) ||
+                    (producer.email && producer.email.toLowerCase().includes(searchTerm)) ||
+                    (producer.phone && producer.phone.includes(searchTerm));
+
+                let matchesStatus = true;
+                if (statusFilter === 'pending') {
+                    matchesStatus = producer.is_approved === null || producer.is_approved === undefined || producer.is_approved === false;
+                } else if (statusFilter === 'approved') {
+                    matchesStatus = producer.is_approved === true;
+                } else if (statusFilter === 'rejected') {
+                    matchesStatus = producer.is_approved === false;
+                }
+
+                return matchesSearch && matchesStatus;
+            });
+
+            renderProducers(filtered);
+        }
+
+        async function approveProducer(producerId) {
+            if (!confirm('هل أنت متأكد من اعتماد هذه الأسرة المنتجة؟')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ is_approved: true })
+                    .eq('id', producerId);
+
+                if (error) throw error;
+
+                showAlert('success', '✅ تم اعتماد الأسرة المنتجة بنجاح');
+                await loadProducers();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'حدث خطأ في اعتماد الأسرة');
+            }
+        }
+
+        async function rejectProducer(producerId) {
+            if (!confirm('هل أنت متأكد من رفض هذه الأسرة المنتجة؟')) return;
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({ is_approved: false })
+                    .eq('id', producerId);
+
+                if (error) throw error;
+
+                showAlert('success', '✅ تم رفض الأسرة المنتجة');
+                await loadProducers();
+            } catch (error) {
+                console.error('Error:', error);
+                showAlert('error', 'حدث خطأ في رفض الأسرة');
+            }
+        }
+
+        async function viewProducer(producerId) {
+            const producer = allProducers.find(p => p.id === producerId);
+            if (!producer) return;
+
+            alert(`
+                تفاصيل الأسرة المنتجة:
+                
+                الاسم: ${producer.full_name || '-'}
+                البريد: ${producer.email || '-'}
+                الجوال: ${producer.phone || '-'}
+                الحالة: ${getStatusText(producer)}
+                تاريخ التسجيل: ${formatDate(producer.created_at)}
+                
+                ${producer.doc_url ? 'الوثيقة: متوفرة' : 'الوثيقة: غير متوفرة'}
+            `);
+        }
+
+        async function handleLogout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                await supabaseClient.auth.signOut();
+                localStorage.removeItem('rizq_user');
+                window.location.href = 'index.html';
+            }
+        }
+
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            const overlay = document.getElementById('overlay');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
+            
+            alertBox.className = 'alert-box show ' + type;
+            overlay.classList.add('show');
+            
+            if (type === 'success') alertTitle.textContent = 'نجح!';
+            else if (type === 'error') alertTitle.textContent = 'خطأ';
+            else if (type === 'warning') alertTitle.textContent = 'تنبيه';
+            
+            alertMessage.textContent = message;
+        }
+
+        function closeAlert() {
+            document.getElementById('alertBox').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+    </script>
+</body>
+</html>

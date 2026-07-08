@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رزقي هب - منصة الأسر المنتجة</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white !important;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #3b4d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        #chatBtn:hover { background: #3b4d32; transform: translateY(-2px); }
+
+        /* جميع الأزرار بنفس اللون */
+        .nav-btn {
+            background: var(--primary-color);
+            color: white !important;
+        }
+
+        /* 🛒 زر السلة مع الشارة */
+        .cart-btn {
+            background: var(--accent-color) !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cart-btn:hover {
+            background: #b89559 !important;
+            transform: translateY(-2px);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #d9534f;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 40px 40px;
+            overflow-y: auto;
+        }
+
+        /* ===== قسم الترحيب الرئيسي ===== */
+        .main-welcome {
+            text-align: center;
+            margin-bottom: 50px;
+            margin-right: 350px;
+            animation: fadeIn 1s ease;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px 60px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-width: 700px;
+        }
+
+        .main-welcome h1 {
+            color: var(--primary-color);
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            text-shadow: none;
+        }
+
+        .main-welcome p {
+            color: #444;
+            font-size: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.8;
+            font-weight: 500;
+        }
+
+        /* ===== شبكة الأقسام الرئيسية ===== */
+        .categories-section {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: fadeIn 1.2s ease;
+        }
+
+        .categories-section h2 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+            font-weight: 700;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            display: block;
+        }
+
+        .category-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .category-card .image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 220px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f5a623 0%, #d9534f 100%);
+        }
+
+        .category-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .category-card:hover img {
+            transform: scale(1.1);
+        }
+
+        .category-card .category-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+            color: white;
+            padding: 30px 15px 15px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .category-card .category-info {
+            padding: 20px;
+            text-align: center;
+            background: white;
+        }
+
+        .category-card .category-info h3 {
+            color: var(--primary-color);
+            font-size: 18px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .category-card .category-info span {
+            color: var(--accent-color);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* ===== شاشة الأقسام (Modal) ===== */
+        #products-screen {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-height: 80vh;
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 15px;
+            padding: 25px;
+            overflow-y: auto;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 100;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #eee;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .product-card img { 
+            width: 100%; 
+            height: 180px;
+            object-fit: cover; 
+            border-radius: 8px; 
+            background-color: #f4f1eb; 
+        }
+        .product-card h3 { 
+            font-size: 16px; 
+            margin: 15px 0 5px; 
+            color: var(--text-dark); 
+            font-weight: 700;
+        }
+        .product-card span {
+            font-size: 13px;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* شاشة من نحن */
+        #about-screen {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 420px;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            text-align: right;
+            display: none;
+            line-height: 1.8;
+            color: #555;
+            z-index: 100;
+        }
+        #about-screen h2 { color: var(--primary-color); margin-bottom: 20px; text-align: center; }
+
+        .close-btn {
+            background: #e0e0e0;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .close-btn:hover { background: #d0d0d0; }
+
+        /* overlay للخلفية */
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 99;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* تحسينات للشاشات الصغيرة */
+        @media (max-width: 768px) {
+            .navbar { right: 20px; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+            .nav-btn { font-size: 13px; padding: 6px 12px; }
+            .main-welcome { 
+                padding: 30px 20px; 
+                margin: 0 20px 40px;
+            }
+            .main-welcome h1 { font-size: 32px; }
+            .main-welcome p { font-size: 16px; }
+            .categories-section h2 { font-size: 24px; }
+            .categories-grid { grid-template-columns: 1fr; gap: 20px; }
+            .category-card .image-wrapper { height: 180px; }
+            .cart-badge { left: auto; right: -8px; }
+            #about-screen { width: 90%; }
+            .container { padding: 100px 20px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <button class="nav-btn" onclick="scrollToTop()">الرئيسية</button>
+        <button class="nav-btn" onclick="showSection('about')">من نحن</button>
+        <button class="nav-btn" onclick="showSection('products')">تصفّح الأقسام</button>
+        
+        <!-- 🔐 أزرار المصادقة -->
+        <div style="display: flex; gap: 10px;" id="authButtons">
+            <a href="login.html" class="nav-btn" id="loginLink">تسجيل الدخول</a>
+            <a href="register.html" class="nav-btn" id="registerLink">تسجيل جديد</a>
+        </div>
+
+        <!-- 🚪 زر تسجيل الخروج (يظهر بعد تسجيل الدخول) -->
+        <button class="nav-btn" id="logoutBtn" onclick="handleLogout()" style="display: none;">
+            🚪 خروج
+        </button>
+
+        <!-- 🔔 زر المحادثات - يظهر فقط بعد تسجيل الدخول -->
+        <button class="nav-btn" id="chatBtn" onclick="window.location.href='chat.html'" style="display: none;">
+            💬 محادثاتي
+        </button>
+
+        <!-- 📦 زر منتجاتي - يظهر للأسر المنتجة فقط -->
+        <button class="nav-btn" id="myProductsBtn" onclick="window.location.href='my-products.html'" style="display: none; background: var(--accent-color); color: white; padding: 8px 20px; border-radius: 8px;">
+            📦 منتجاتي
+        </button>
+
+        <!-- 🛒 زر طلباتي - يظهر لجميع المسجلين -->
+        <button class="nav-btn" id="myOrdersBtn" onclick="window.location.href='my-orders.html'" style="display: none;">
+            📋 طلباتي
+        </button>
+
+        <!-- زر إضافة منتج - يظهر للأسر المنتجة فقط -->
+        <button class="nav-btn" id="addProductBtn" onclick="window.location.href='add-product.html'" style="display: none; background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 8px;">
+            ➕ إضافة منتج
+        </button>
+
+        <!-- 🎛️ زر لوحة التحكم - يظهر للأدمن فقط -->
+        <button class="nav-btn" id="adminDashboardBtn" onclick="checkAdminAccess()" style="display: none; background: var(--primary-color); color: white; padding: 8px 20px; border-radius: 8px;">
+            🎛️ لوحة التحكم
+        </button>
+
+        <!-- 🛒 زر السلة - يظهر للجميع -->
+        <button class="nav-btn cart-btn" id="cartBtn" onclick="window.location.href='cart.html'">
+            🛒 سلة المشتريات
+            <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+        </button>
+    </nav>
+
+    <div class="container">
+        
+        <!-- قسم الترحيب الرئيسي -->
+        <div class="main-welcome" id="mainWelcome">
+            <h1>رزقي هب</h1>
+            <p>منصة الأسر المنتجة - اكتشف منتجات محلية مميزة بدعم مباشر من الأسر المنتجة</p>
+        </div>
+
+        <!-- ===== الأقسام الأربعة الرئيسية ===== -->
+        <div class="categories-section" id="categoriesSection">
+            <h2>تصفح الأقسام</h2>
+            <div class="categories-grid">
+                <!-- المنتجات الغذائية -->
+                <a href="food.html" class="category-card">
+                    <div class="image-wrapper" style="background: linear-gradient(135deg, #f5a623 0%, #d9534f 100%);">
+                        <img src="images/categories/cat-food.webp" alt="المنتجات الغذائية" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23f5a623%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22white%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🥘 المنتجات الغذائية%3C/text%3E%3C/svg%3E'">
+                        <div class="category-title">المنتجات الغذائية</div>
+                    </div>
+                    <div class="category-info">
+                        <h3>المنتجات الغذائية</h3>
+                        <span>تصفح المنتجات →</span>
+                    </div>
+                </a>
+
+                <!-- الحرف اليدوية -->
+                <a href="handicrafts.html" class="category-card">
+                    <div class="image-wrapper" style="background: linear-gradient(135deg, #7b68ee 0%, #9370db 100%);">
+                        <img src="images/categories/cat-handicrafts.webp" alt="الحرف اليدوية" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%237b68ee%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22white%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🎨 الحرف اليدوية%3C/text%3E%3C/svg%3E'">
+                        <div class="category-title">الحرف اليدوية</div>
+                    </div>
+                    <div class="category-info">
+                        <h3>الحرف اليدوية</h3>
+                        <span>تصفح المنتجات →</span>
+                    </div>
+                </a>
+
+                <!-- الخياطة والتطريز -->
+                <a href="sewing.html" class="category-card">
+                    <div class="image-wrapper" style="background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);">
+                        <img src="images/categories/cat-sewing.webp" alt="الخياطة والتطريز" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%23ff6b6b%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22white%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🧵 الخياطة والتطريز%3C/text%3E%3C/svg%3E'">
+                        <div class="category-title">الخياطة والتطريز</div>
+                    </div>
+                    <div class="category-info">
+                        <h3>الخياطة والتطريز</h3>
+                        <span>تصفح المنتجات →</span>
+                    </div>
+                </a>
+
+                <!-- العناية الشخصية -->
+                <a href="personal-care.html" class="category-card">
+                    <div class="image-wrapper" style="background: linear-gradient(135deg, #50c878 0%, #3cb371 100%);">
+                        <img src="images/categories/cat-personal-care.webp" alt="العناية الشخصية" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22400%22 height=%22300%22%3E%3Crect fill=%22%2350c878%22 width=%22400%22 height=%22300%22/%3E%3Ctext fill=%22white%22 font-size=%2224%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22%3E🧴 العناية الشخصية%3C/text%3E%3C/svg%3E'">
+                        <div class="category-title">العناية الشخصية</div>
+                    </div>
+                    <div class="category-info">
+                        <h3>العناية الشخصية</h3>
+                        <span>تصفح المنتجات →</span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- شاشة الأقسام (Modal) -->
+        <div id="products-screen">
+            <button class="close-btn" onclick="closeSections()">إغلاق</button>
+            <h2 style="color: var(--primary-color); text-align: center;">أقسام منتجات الأسر المنتجة</h2>
+            <div class="products-grid">
+                <div class="product-card" onclick="window.location.href='food.html'">
+                    <img src="images/categories/cat-food.webp" alt="المنتجات الغذائية" onerror="this.style.display='none'">
+                    <h3>المنتجات الغذائية</h3>
+                    <span>تصفح المنتجات</span>
+                </div>
+                <div class="product-card" onclick="window.location.href='handicrafts.html'">
+                    <img src="images/categories/cat-handicrafts.webp" alt="الحرف اليدوية" onerror="this.style.display='none'">
+                    <h3>الحرف اليدوية</h3>
+                    <span>تصفح المنتجات</span>
+                </div>
+                <div class="product-card" onclick="window.location.href='sewing.html'">
+                    <img src="images/categories/cat-sewing.webp" alt="الخياطة والتطريز" onerror="this.style.display='none'">
+                    <h3>الخياطة والتطريز</h3>
+                    <span>تصفح المنتجات</span>
+                </div>
+                <div class="product-card" onclick="window.location.href='personal-care.html'">
+                    <img src="images/categories/cat-personal-care.webp" alt="العناية الشخصية" onerror="this.style.display='none'">
+                    <h3>العناية الشخصية</h3>
+                    <span>تصفح المنتجات</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- شاشة من نحن -->
+        <div id="about-screen">
+            <h2>من نحن</h2>
+            <p>
+                رزقي هب منصة رقمية تهدف لتمكين الأسر المنتجة وتقديم منتجاتهم المميزة مباشرة إلى المستهلكين. 
+                نسعى لخلق جسور تواصل فعالة تدعم الاقتصاد المحلي وتعزز الاستقلالية المالية للأسر، مع ضمان جودة عالية وثقة متبادلة.
+            </p>
+            <button class="close-btn" onclick="closeSections()">إغلاق</button>
+        </div>
+    </div>
+
+    <!-- Overlay -->
+    <div class="overlay" id="overlay" onclick="closeSections()"></div>
+
+    <!-- ✅ كود الجافاسكربت -->
+    <script>
+        // 🎭 دالة عرض الأقسام
+        function showSection(sectionName) {
+            const overlay = document.getElementById('overlay');
+            
+            if (sectionName === 'products') {
+                document.getElementById('products-screen').style.display = 'block';
+                overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else if (sectionName === 'about') {
+                document.getElementById('about-screen').style.display = 'block';
+                overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        function closeSections() {
+            document.getElementById('products-screen').style.display = 'none';
+            document.getElementById('about-screen').style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // 👁️ تحديث واجهة المستخدم حسب حالة تسجيل الدخول - محسّنة
+        function updateNavbarVisibility(userRole, userName) {
+            console.log('🔍 تحديث الواجهة - الدور:', userRole);
+            
+            const chatBtn = document.getElementById('chatBtn');
+            const addBtn = document.getElementById('addProductBtn');
+            const myProdBtn = document.getElementById('myProductsBtn');
+            const myOrdersBtn = document.getElementById('myOrdersBtn');
+            const adminDashboardBtn = document.getElementById('adminDashboardBtn');
+            const loginLink = document.getElementById('loginLink');
+            const registerLink = document.getElementById('registerLink');
+            const authButtons = document.getElementById('authButtons');
+            const logoutBtn = document.getElementById('logoutBtn');
+
+            // 🔐 إخفاء أزرار تسجيل الدخول والتسجيل وإظهار زر تسجيل الخروج
+            if (authButtons) authButtons.style.display = 'none';
+            if (logoutBtn) logoutBtn.style.display = 'inline-block';
+
+            // 💬 زر المحادثات يظهر للجميع بعد تسجيل الدخول
+            if (chatBtn) chatBtn.style.display = 'inline-block';
+
+            // 📋 زر طلباتي يظهر لجميع المسجلين
+            if (myOrdersBtn) myOrdersBtn.style.display = 'inline-block';
+
+            // 📦 أزرار الأسر المنتجة تظهر فقط لهم
+            if (userRole === 'producer') {
+                console.log('✅ المستخدم أسرة منتجة - إظهار زر منتجاتي');
+                if (addBtn) addBtn.style.display = 'inline-block';
+                if (myProdBtn) {
+                    myProdBtn.style.display = 'inline-block';
+                    console.log('✅ تم إظهار زر منتجاتي');
+                }
+            } else {
+                console.log('❌ المستخدم ليس أسرة منتجة - إخفاء زر منتجاتي');
+                if (addBtn) addBtn.style.display = 'none';
+                if (myProdBtn) myProdBtn.style.display = 'none';
+            }
+
+            // 🎛️ زر لوحة التحكم يظهر للأدمن فقط
+            if (userRole === 'admin') {
+                if (adminDashboardBtn) adminDashboardBtn.style.display = 'inline-block';
+            } else {
+                if (adminDashboardBtn) adminDashboardBtn.style.display = 'none';
+            }
+        }
+
+        // 🔐 التحقق من صلاحيات الأدمن قبل الدخول
+        function checkAdminAccess() {
+            const savedUser = localStorage.getItem('rizq_user');
+            
+            if (!savedUser) {
+                alert('⚠️ يجب تسجيل الدخول أولاً');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            try {
+                const user = JSON.parse(savedUser);
+                
+                // التحقق من أن المستخدم أدمن والبريد مطابق
+                if (user.role === 'admin' && user.email === 'azm.alenjaz.publisher@gmail.com') {
+                    window.location.href = 'admin-dashboard.html';
+                } else {
+                    alert('❌ ليس لديك صلاحيات للوصول إلى هذه الصفحة');
+                }
+            } catch (e) {
+                alert('❌ حدث خطأ في التحقق من الصلاحيات');
+            }
+        }
+
+        // 🚪 تسجيل الخروج
+        function handleLogout() {
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                // حذف بيانات الجلسة
+                localStorage.removeItem('rizq_user');
+                
+                // إعادة تحميل الصفحة
+                window.location.reload();
+            }
+        }
+
+        // 🔍 التحقق من حالة الدخول عند تحميل الصفحة - محسّنة
+        window.addEventListener('load', function() {
+            const savedUser = localStorage.getItem('rizq_user');
+            
+            console.log('📦 بيانات المستخدم من localStorage:', savedUser);
+            
+            if (savedUser) {
+                try {
+                    const user = JSON.parse(savedUser);
+                    console.log('👤 المستخدم:', user);
+                    console.log('🎭 الدور:', user.role);
+                    updateNavbarVisibility(user.role, user.name);
+                } catch (e) {
+                    console.error('❌ خطأ في قراءة البيانات:', e);
+                    localStorage.removeItem('rizq_user');
+                }
+            } else {
+                console.log('⚠️ لا يوجد مستخدم مسجل');
+            }
+            
+            // 🛒 تحديث شارة السلة
+            updateCartBadge();
+        });
+
+        // ========================================
+        // 🛒 دوال السلة - مزامنة مع صفحة cart.html
+        // ========================================
+        
+        // تحديث شارة السلة
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if (!badge) return;
+            
+            try {
+                const cart = JSON.parse(localStorage.getItem('rizqy_cart') || '[]');
+                const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (e) {
+                badge.style.display = 'none';
+            }
+        }
+
+        // الاستماع لتحديثات السلة من صفحات أخرى
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'rizqy_cart' || e.key === 'rizq_cart_sync') {
+                updateCartBadge();
+            }
+        });
+
+        // تحديث الشارة عند العودة للصفحة
+        window.addEventListener('pageshow', function() {
+            updateCartBadge();
+        });
+    </script>
+</body>
+</html>

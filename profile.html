@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الملف الشخصي - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+            --success-color: #5cb85c;
+            --danger-color: #d9534f;
+            --warning-color: #f0ad4e;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 25px;
+            right: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .back-btn:hover { background: var(--primary-color); color: white; }
+
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* صورة الملف الشخصي */
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            font-weight: 700;
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        /* بطاقات الأقسام */
+        .profile-sections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+        }
+
+        .profile-card h3 {
+            color: var(--primary-color);
+            font-size: 20px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* نموذج التعديل */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 700;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'Tajawal', sans-serif;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-group input:read-only {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #3b4d32;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+        }
+
+        .btn-danger {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c9302c;
+        }
+
+        /* معلومات المستخدم */
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .info-value {
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+
+        /* شارة الدور */
+        .role-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .role-badge.admin {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .role-badge.producer {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .role-badge.customer {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        /* الإحصائيات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-item .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-item .label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        /* حالة التحميل */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* حالة عدم تسجيل الدخول */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        /* رسائل التنبيه */
+        .alert-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .alert-box.show { display: block; }
+        .alert-box.error { border-top: 5px solid var(--danger-color); }
+        .alert-box.success { border-top: 5px solid var(--success-color); }
+        .alert-box.warning { border-top: 5px solid var(--warning-color); }
+
+        .alert-box h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .alert-box button {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.show { display: block; }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary-color);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-weight: 500;
+            z-index: 1001;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translate(-50%, 20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        /* تبويبات */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover {
+            color: var(--primary-color);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin-top: 100px; }
+            .page-header h1 { font-size: 24px; }
+            .profile-sections { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← العودة للرئيسية</a>
+
+    <div class="container">
+        <div class="page-header">
+            <h1> الملف الشخصي</h1>
+            <p>إدارة معلومات حسابك وإعداداتك الشخصية</p>
+        </div>
+
+        <div id="profileContent">
+            <p class="loading">🔄 جاري تحميل بياناتك...</p>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="alert-box" id="alertBox">
+        <h3 id="alertTitle">تنبيه</h3>
+        <p id="alertMessage"></p>
+        <button onclick="closeAlert()">حسناً</button>
+    </div>
+
+    <!-- 🟢 مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 🔑 إعدادات Supabase
+        const SUPABASE_URL = 'https://yzqahzwqwcxypryzarxk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_qW1pvyy3MogDo5ZgK8JQQQ_w3mO0phv';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let currentUser = null;
+        let userData = null;
+
+        window.addEventListener('load', async function() {
+            await loadProfile();
+        });
+
+        // تحميل بيانات الملف الشخصي
+        async function loadProfile() {
+            const container = document.getElementById('profileContent');
+            
+            try {
+                // التحقق من تسجيل الدخول
+                const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+                
+                if (sessionError || !session) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h2>⚠️ يجب تسجيل الدخول</h2>
+                            <p>سجّل دخولك لعرض ملفك الشخصي</p>
+                            <a href="login.html">تسجيل الدخول</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                currentUser = session.user;
+
+                // جلب بيانات المستخدم من جدول users
+                const { data: user, error } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', currentUser.id)
+                    .single();
+
+                if (error) {
+                    console.error('خطأ في جلب البيانات:', error);
+                    // إنشاء سجل جديد إذا لم يكن موجوداً
+                    await createNewUserRecord();
+                    return;
+                }
+
+                userData = user;
+                displayProfile();
+
+            } catch (err) {
+                console.error('❌ خطأ:', err);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>⚠️ خطأ في تحميل البيانات</h2>
+                        <p>${err.message}</p>
+                        <a href="index.html">العودة للرئيسية</a>
+                    </div>
+                `;
+            }
+        }
+
+        // إنشاء سجل جديد للمستخدم
+        async function createNewUserRecord() {
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .insert([{
+                        id: currentUser.id,
+                        full_name: currentUser.user_metadata?.full_name || currentUser.email.split('@')[0],
+                        email: currentUser.email,
+                        role: 'customer',
+                        is_approved: false,
+                        created_at: new Date().toISOString()
+                    }]);
+
+                if (error) throw error;
+
+                showToast('✅ تم إنشاء حسابك بنجاح');
+                await loadProfile();
+            } catch (err) {
+                console.error('خطأ في إنشاء السجل:', err);
+            }
+        }
+
+        // عرض الملف الشخصي
+        function displayProfile() {
+            const container = document.getElementById('profileContent');
+            const role = userData.role || 'customer';
+            const roleText = getRoleText(role);
+            const initial = (userData.full_name || currentUser.email)[0].toUpperCase();
+
+            container.innerHTML = `
+                <div class="profile-avatar">${initial}</div>
+                <h2 style="text-align: center; color: var(--primary-color); margin-bottom: 5px;">
+                    ${userData.full_name || 'مستخدم'}
+                </h2>
+                <p style="text-align: center; color: #666; margin-bottom: 30px;">
+                    ${currentUser.email}
+                </p>
+
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab('info')">📋 المعلومات الشخصية</button>
+                    <button class="tab-btn" onclick="switchTab('password')"> تغيير كلمة المرور</button>
+                    <button class="tab-btn" onclick="switchTab('stats')">📊 الإحصائيات</button>
+                    <button class="tab-btn" onclick="switchTab('danger')">⚠️ منطقة الخطر</button>
+                </div>
+
+                <!-- تبويب المعلومات -->
+                <div id="tab-info" class="tab-content active">
+                    <div class="profile-card">
+                        <h3>📋 المعلومات الشخصية</h3>
+                        
+                        <div class="form-group">
+                            <label>الاسم الكامل</label>
+                            <input type="text" id="fullName" value="${userData.full_name || ''}" placeholder="أدخل اسمك الكامل">
+                        </div>
+
+                        <div class="form-group">
+                            <label>البريد الإلكتروني</label>
+                            <input type="email" value="${currentUser.email}" readonly>
+                        </div>
+
+                        <div class="form-group">
+                            <label>رقم الجوال</label>
+                            <input type="tel" id="phone" value="${userData.phone || ''}" placeholder="05xxxxxxxx">
+                        </div>
+
+                        <div class="form-group">
+                            <label>العنوان</label>
+                            <textarea id="address" rows="3" placeholder="أدخل عنوانك">${userData.address || ''}</textarea>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">نوع الحساب:</span>
+                            <span class="role-badge ${role}">${roleText}</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">حالة الحساب:</span>
+                            <span class="info-value" style="color: ${userData.is_approved ? 'var(--success-color)' : 'var(--warning-color)'}">
+                                ${userData.is_approved ? '✅ معتمد' : '⏳ قيد المراجعة'}
+                            </span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">تاريخ الانضمام:</span>
+                            <span class="info-value">${formatDate(userData.created_at)}</span>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" onclick="updateProfile()">💾 حفظ التغييرات</button>
+                            <button class="btn btn-secondary" onclick="resetForm()">↺ إلغاء</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تبويب كلمة المرور -->
+                <div id="tab-password" class="tab-content">
+                    <div class="profile-card">
+                        <h3> تغيير كلمة المرور</h3>
+                        
+                        <div class="form-group">
+                            <label>كلمة المرور الحالية</label>
+                            <input type="password" id="currentPassword" placeholder="أدخل كلمة المرور الحالية">
+                        </div>
+
+                        <div class="form-group">
+                            <label>كلمة المرور الجديدة</label>
+                            <input type="password" id="newPassword" placeholder="أدخل كلمة المرور الجديدة (6 أحرف على الأقل)">
+                        </div>
+
+                        <div class="form-group">
+                            <label>تأكيد كلمة المرور الجديدة</label>
+                            <input type="password" id="confirmPassword" placeholder="أعد إدخال كلمة المرور الجديدة">
+                        </div>
+
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; font-size: 13px; color: #856404;">
+                            💡 <strong>ملاحظة:</strong> عند تغيير كلمة المرور، سيتم تسجيل خروجك من جميع الأجهزة وستحتاج لتسجيل الدخول مرة أخرى.
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn btn-primary" onclick="updatePassword()">🔐 تحديث كلمة المرور</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- تبويب الإحصائيات -->
+                <div id="tab-stats" class="tab-content">
+                    <div class="profile-card">
+                        <h3>📊 إحصائيات حسابك</h3>
+                        <div class="stats-grid" id="statsGrid">
+                            <div class="stat-item">
+                                <div class="number" id="statOrders">-</div>
+                                <div class="label">طلباتي</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="number" id="statProducts">-</div>
+                                <div class="label">منتجاتي</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="number" id="statConversations">-</div>
+                                <div class="label">محادثاتي</div>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" style="margin-top: 20px;" onclick="loadStats()">🔄 تحديث الإحصائيات</button>
+                    </div>
+                </div>
+
+                <!-- تبويب منطقة الخطر -->
+                <div id="tab-danger" class="tab-content">
+                    <div class="profile-card" style="border: 2px solid var(--danger-color);">
+                        <h3 style="color: var(--danger-color);">⚠️ منطقة الخطر</h3>
+                        <p style="color: #666; margin-bottom: 20px; line-height: 1.8;">
+                            الإجراءات في هذا القسم لا يمكن التراجع عنها. يرجى الحذر عند استخدامها.
+                        </p>
+                        
+                        <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <strong>🚪 تسجيل الخروج من جميع الأجهزة</strong>
+                            <p style="font-size: 13px; margin-top: 5px;">سيتم تسجيل خروجك من جميع الأجهزة والمتصفحات</p>
+                        </div>
+                        <button class="btn btn-secondary" onclick="logoutAllDevices()" style="margin-bottom: 20px;">
+                            🚪 تسجيل الخروج من الكل
+                        </button>
+
+                        <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+                            <strong>️ حذف الحساب نهائياً</strong>
+                            <p style="font-size: 13px; margin-top: 5px;">سيتم حذف جميع بياناتك وطلباتك ومنتجاتك بشكل نهائي</p>
+                        </div>
+                        <button class="btn btn-danger" onclick="deleteAccount()">
+                            🗑️ حذف حسابي نهائياً
+                        </button>
+                    </div>
+                </div>
+            `;
+
+            // تحميل الإحصائيات تلقائياً
+            loadStats();
+        }
+
+        // تبديل التبويبات
+        function switchTab(tabName) {
+            // إخفاء جميع التبويبات
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            // إظهار التبويب المحدد
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // تحديث الملف الشخصي
+        async function updateProfile() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const address = document.getElementById('address').value.trim();
+
+            if (!fullName) {
+                showAlert('warning', '⚠️ يرجى إدخال الاسم الكامل');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient
+                    .from('users')
+                    .update({
+                        full_name: fullName,
+                        phone: phone,
+                        address: address,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('id', currentUser.id);
+
+                if (error) throw error;
+
+                // تحديث localStorage
+                const savedUser = JSON.parse(localStorage.getItem('rizq_user') || '{}');
+                savedUser.name = fullName;
+                localStorage.setItem('rizq_user', JSON.stringify(savedUser));
+
+                showToast('✅ تم تحديث المعلومات بنجاح');
+                await loadProfile();
+            } catch (err) {
+                console.error('خطأ:', err);
+                showAlert('error', '❌ فشل تحديث المعلومات: ' + err.message);
+            }
+        }
+
+        // تغيير كلمة المرور
+        async function updatePassword() {
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (!currentPassword || !newPassword || !confirmPassword) {
+                showAlert('warning', '⚠️ يرجى ملء جميع الحقول');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showAlert('warning', '⚠️ كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                showAlert('error', '❌ كلمة المرور الجديدة غير متطابقة');
+                return;
+            }
+
+            try {
+                const { error } = await supabaseClient.auth.updateUser({
+                    password: newPassword
+                });
+
+                if (error) throw error;
+
+                showAlert('success', '✅ تم تغيير كلمة المرور بنجاح\nسيتم تسجيل خروجك الآن');
+                
+                setTimeout(async () => {
+                    await supabaseClient.auth.signOut();
+                    localStorage.removeItem('rizq_user');
+                    window.location.href = 'login.html';
+                }, 2000);
+            } catch (err) {
+                console.error('خطأ:', err);
+                showAlert('error', ' فشل تغيير كلمة المرور: ' + err.message);
+            }
+        }
+
+        // تحميل الإحصائيات
+        async function loadStats() {
+            try {
+                // عدد الطلبات
+                const { count: ordersCount } = await supabaseClient
+                    .from('orders')
+                    .select('*', { count: 'exact', head: true })
+                    .eq('user_id', currentUser.id);
+
+                // عدد المنتجات (للأسر المنتجة)
+                let productsCount = 0;
+                if (userData.role === 'producer') {
+                    const { count } = await supabaseClient
+                        .from('products')
+                        .select('*', { count: 'exact', head: true })
+                        .eq('user_id', currentUser.id);
+                    productsCount = count || 0;
+                }
+
+                // عدد المحادثات
+                const { count: convCount } = await supabaseClient
+                    .from('conversations')
+                    .select('*', { count: 'exact', head: true })
+                    .or(`customer_id.eq.${currentUser.id},producer_id.eq.${currentUser.id}`);
+
+                document.getElementById('statOrders').textContent = ordersCount || 0;
+                document.getElementById('statProducts').textContent = productsCount;
+                document.getElementById('statConversations').textContent = convCount || 0;
+            } catch (err) {
+                console.error('خطأ في الإحصائيات:', err);
+            }
+        }
+
+        // تسجيل الخروج من جميع الأجهزة
+        async function logoutAllDevices() {
+            if (!confirm('هل أنت متأكد من تسجيل الخروج من جميع الأجهزة؟')) return;
+
+            try {
+                await supabaseClient.auth.signOut({ scope: 'global' });
+                localStorage.removeItem('rizq_user');
+                window.location.href = 'login.html';
+            } catch (err) {
+                showAlert('error', '❌ فشل تسجيل الخروج');
+            }
+        }
+
+        // حذف الحساب
+        async function deleteAccount() {
+            const confirmText = 'هل أنت متأكد من حذف حسابك نهائياً؟\n\nهذا الإجراء لا يمكن التراجع عنه!\nسيتم حذف:\n- جميع طلباتك\n- جميع منتجاتك (إذا كنت أسرة منتجة)\n- جميع محادثاتك\n- جميع بياناتك الشخصية';
+            
+            if (!confirm(confirmText)) return;
+            
+            const finalConfirm = prompt('للتأكيد، اكتب كلمة "حذف" للمتابعة:');
+            if (finalConfirm !== 'حذف') {
+                showAlert('warning', '⚠️ تم إلغاء العملية');
+                return;
+            }
+
+            try {
+                // حذف الطلبات
+                await supabaseClient.from('orders').delete().eq('user_id', currentUser.id);
+                
+                // حذف المنتجات
+                await supabaseClient.from('products').delete().eq('user_id', currentUser.id);
+                
+                // حذف المحادثات
+                await supabaseClient.from('conversations').delete().or(`customer_id.eq.${currentUser.id},producer_id.eq.${currentUser.id}`);
+                
+                // حذف المستخدم من جدول users
+                await supabaseClient.from('users').delete().eq('id', currentUser.id);
+                
+                // حذف الحساب من auth
+                const { error } = await supabaseClient.auth.admin.deleteUser(currentUser.id);
+                
+                if (error) {
+                    // إذا فشل حذف auth، نسجل الخروج فقط
+                    await supabaseClient.auth.signOut();
+                }
+                
+                localStorage.removeItem('rizq_user');
+                showAlert('success', '✅ تم حذف حسابك بنجاح');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } catch (err) {
+                console.error('خطأ:', err);
+                showAlert('error', '❌ فشل حذف الحساب: ' + err.message);
+            }
+        }
+
+        // إعادة تعيين النموذج
+        function resetForm() {
+            if (userData) {
+                document.getElementById('fullName').value = userData.full_name || '';
+                document.getElementById('phone').value = userData.phone || '';
+                document.getElementById('address').value = userData.address || '';
+            }
+            showToast(' تم إلغاء التغييرات');
+        }
+
+        // نص الدور
+        function getRoleText(role) {
+            const texts = {
+                'admin': '👑 مسؤول',
+                'producer': '🏠 أسرة منتجة',
+                'customer': '🛒 عميل',
+                'driver': ' مندوب'
+            };
+            return texts[role] || role;
+        }
+
+        // تنسيق التاريخ
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            return new Date(dateString).toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        // إظهار Toast
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transition = 'opacity 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // إغلاق التنبيه
+        function closeAlert() {
+            document.getElementById('alertBox').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            const overlay = document.getElementById('overlay');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
+            
+            alertBox.className = 'alert-box show ' + type;
+            overlay.classList.add('show');
+            
+            if (type === 'success') alertTitle.textContent = 'نجح!';
+            else if (type === 'error') alertTitle.textContent = 'خطأ';
+            else if (type === 'warning') alertTitle.textContent = 'تنبيه';
+            
+            alertMessage.textContent = message;
+        }
+    </script>
+</body>
+</html>

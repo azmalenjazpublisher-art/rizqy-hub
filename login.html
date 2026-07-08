@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        /* ===== القائمة العلوية ===== */
+        .navbar {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 100;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white !important;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #3b4d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* 🛒 زر السلة */
+        .cart-btn {
+            background: var(--accent-color) !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .cart-btn:hover {
+            background: #b89559 !important;
+            transform: translateY(-2px);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            background: #d9534f;
+            color: white;
+            font-size: 11px;
+            font-weight: 700;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* ===== حاوية تسجيل الدخول ===== */
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px 40px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .login-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: right;
+            position: relative;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #f9f9f9;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #3b4d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .submit-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .links {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .links a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 14px;
+            display: block;
+            margin: 10px 0;
+            transition: color 0.3s;
+        }
+
+        .links a:hover {
+            color: #3b4d32;
+            text-decoration: underline;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 25px;
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .back-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* ===== شاشة الأقسام ===== */
+        #products-screen {
+            display: none;
+            position: fixed;
+            top: 15%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 85%;
+            max-height: 75vh;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 25px;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 50;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+            margin-top: 25px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid #eee;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #f4f1eb;
+        }
+        .product-card h3 {
+            font-size: 16px;
+            margin: 15px 0 5px;
+            color: var(--text-dark);
+            font-weight: 700;
+        }
+        .product-card span {
+            font-size: 13px;
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        /* ===== شاشة من نحن ===== */
+        #about-screen {
+            display: none;
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 420px;
+            max-width: 90%;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: right;
+            line-height: 1.8;
+            color: #555;
+            z-index: 50;
+        }
+        #about-screen h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .close-btn {
+            background: #e0e0e0;
+            color: #333;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .close-btn:hover { background: #d0d0d0; }
+
+        /* ===== نافذة استعادة كلمة المرور ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-content h3 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .modal-content p {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-buttons button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal-buttons .send-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .modal-buttons .cancel-btn {
+            background: #ddd;
+            color: #333;
+        }
+
+        .modal-buttons button:hover {
+            opacity: 0.9;
+        }
+
+        /* ===== تحسينات للشاشات الصغيرة ===== */
+        @media (max-width: 768px) {
+            .navbar { right: 20px; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+            .nav-btn { font-size: 13px; padding: 6px 12px; }
+            .cart-badge { left: auto; right: -8px; }
+            .login-container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== القائمة العلوية ===== -->
+    <nav class="navbar">
+        <a href="index.html" class="nav-btn">الرئيسية</a>
+        <button class="nav-btn" onclick="showSection('about')">من نحن</button>
+        <button class="nav-btn" onclick="showSection('products')">تصفّح الأقسام</button>
+
+        <!-- 🔐 زر تسجيل الدخول (نشط حالياً) -->
+        <a href="login.html" class="nav-btn active">تسجيل الدخول</a>
+
+        <!-- 🛒 زر السلة -->
+        <button class="nav-btn cart-btn" id="cartBtn" onclick="window.location.href='cart.html'">
+            🛒 سلة المشتريات
+            <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+        </button>
+    </nav>
+
+    <!-- ===== شاشة الأقسام ===== -->
+    <div id="products-screen">
+        <button class="close-btn" onclick="closeSections()">إغلاق</button>
+        <h2 style="color: var(--primary-color); text-align: center;">أقسام منتجات الأسر المنتجة</h2>
+        <div class="products-grid">
+            <div class="product-card" onclick="window.location.href='food.html'">
+                <img src="images/categories/cat-food.webp" alt="المنتجات الغذائية">
+                <h3>المنتجات الغذائية</h3>
+                <span>تصفح المنتجات</span>
+            </div>
+            <div class="product-card" onclick="window.location.href='handicrafts.html'">
+                <img src="images/categories/cat-handicrafts.webp" alt="الحرف اليدوية">
+                <h3>الحرف اليدوية</h3>
+                <span>تصفح المنتجات</span>
+            </div>
+            <div class="product-card" onclick="window.location.href='sewing.html'">
+                <img src="images/categories/cat-sewing.webp" alt="الخياطة والتطريز">
+                <h3>الخياطة والتطريز</h3>
+                <span>تصفح المنتجات</span>
+            </div>
+            <div class="product-card" onclick="window.location.href='personal-care.html'">
+                <img src="images/categories/cat-personal-care.webp" alt="العناية الشخصية">
+                <h3>العناية الشخصية</h3>
+                <span>تصفح المنتجات</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== شاشة من نحن ===== -->
+    <div id="about-screen">
+        <h2>من نحن</h2>
+        <p>
+            رزقي هب منصة رقمية تهدف لتمكين الأسر المنتجة وتقديم منتجاتهم المميزة مباشرة إلى المستهلكين.
+            نسعى لخلق جسور تواصل فعالة تدعم الاقتصاد المحلي وتعزز الاستقلالية المالية للأسر، مع ضمان جودة عالية وثقة متبادلة.
+        </p>
+        <button class="close-btn" onclick="closeSections()">إغلاق</button>
+    </div>
+
+    <!-- ===== حاوية تسجيل الدخول ===== -->
+    <div class="login-wrapper">
+        <div class="login-container">
+            <h2>تسجيل الدخول</h2>
+
+            <div class="input-group">
+                <input type="email" id="loginEmail" placeholder="البريد الإلكتروني">
+            </div>
+
+            <div class="input-group">
+                <input type="password" id="loginPassword" placeholder="كلمة المرور" style="padding-left: 45px;">
+                <span id="toggleLoginPass"
+                      style="position: absolute; left: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 20px; user-select: none; z-index: 10;"
+                      onclick="togglePasswordVisibility()">
+                    👁️
+                </span>
+            </div>
+
+            <button class="submit-btn" onclick="handleLogin()">دخول</button>
+
+            <div class="links">
+                <a href="#" onclick="showForgotPassword()">نسيت كلمة المرور؟</a>
+                <a href="register.html">ليس لديك حساب؟ إنشاء حساب جديد</a>
+            </div>
+
+            <a href="index.html" class="back-btn">العودة للرئيسية</a>
+        </div>
+    </div>
+
+    <!-- ===== نافذة استعادة كلمة المرور ===== -->
+    <div id="forgotPasswordModal" class="modal">
+        <div class="modal-content">
+            <h3>استعادة كلمة المرور</h3>
+            <p>أدخل بريدك الإلكتروني وسنرسل لك رابطاً لإعادة تعيين كلمة المرور</p>
+            <input type="email" id="recoveryEmail" placeholder="البريد الإلكتروني"
+                   style="width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px;">
+            <div class="modal-buttons">
+                <button class="send-btn" onclick="sendPasswordReset()">إرسال الرابط</button>
+                <button class="cancel-btn" onclick="closeForgotPassword()">إلغاء</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 🟢 مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 🔑 إعدادات Supabase
+        const SUPABASE_URL = 'https://yzqahzwqwcxypryzarxk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_qW1pvyy3MogDo5ZgK8JQQQ_w3mO0phv';
+        
+        // ⚙️ تهيئة Supabase
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 🎭 دالة عرض/إخفاء الأقسام
+        function showSection(sectionName) {
+            closeSections();
+            if (sectionName === 'products') {
+                document.getElementById('products-screen').style.display = 'block';
+            } else if (sectionName === 'about') {
+                document.getElementById('about-screen').style.display = 'block';
+            }
+        }
+
+        function closeSections() {
+            document.getElementById('products-screen').style.display = 'none';
+            document.getElementById('about-screen').style.display = 'none';
+        }
+
+        // 🔄 إظهار/إخفاء كلمة المرور
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('loginPassword');
+            const toggleIcon = document.getElementById('toggleLoginPass');
+
+            if (passwordInput && toggleIcon) {
+                if (passwordInput.type === "password") {
+                    passwordInput.type = "text";
+                    toggleIcon.textContent = "🙈";
+                } else {
+                    passwordInput.type = "password";
+                    toggleIcon.textContent = "👁️";
+                }
+            }
+        }
+
+        // 🔐 تسجيل الدخول باستخدام Supabase
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const btn = document.querySelector('.submit-btn');
+
+            if (!email || !password) {
+                alert('⚠️ يرجى إدخال البريد وكلمة المرور');
+                return;
+            }
+
+            btn.textContent = 'جاري التحقق...';
+            btn.disabled = true;
+
+            try {
+                // 1️⃣ تسجيل الدخول في Supabase Auth
+                const { data: authData, error: authError } = await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (authError) {
+                    throw authError;
+                }
+
+                console.log('User logged in:', authData);
+
+                const userId = authData.user.id;
+
+                // 2️⃣ جلب بيانات المستخدم الإضافية من جدول users
+                const { data: userData, error: userError } = await supabaseClient
+                    .from('users')
+                    .select('*')
+                    .eq('id', userId)
+                    .single();
+
+                if (userError) {
+                    console.error('Error fetching user data:', userError);
+                    // إذا لم توجد بيانات إضافية، نستخدم البيانات الأساسية
+                    localStorage.setItem('rizq_user', JSON.stringify({
+                        id: userId,
+                        name: authData.user.email.split('@')[0],
+                        email: authData.user.email,
+                        role: 'customer'
+                    }));
+                } else {
+                    // 3️⃣ حفظ بيانات المستخدم في localStorage
+                    localStorage.setItem('rizq_user', JSON.stringify({
+                        id: userId,
+                        name: userData.full_name,
+                        email: userData.email,
+                        phone: userData.phone,
+                        role: userData.role,
+                        is_approved: userData.is_approved
+                    }));
+                }
+
+                alert('✅ تم تسجيل الدخول بنجاح!');
+                window.location.href = 'index.html';
+
+            } catch (error) {
+                console.error('Login Error:', error);
+                let errorMsg = 'حدث خطأ غير متوقع';
+
+                if (error.message.includes('Invalid login credentials')) {
+                    errorMsg = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                } else if (error.message.includes('Email not confirmed')) {
+                    errorMsg = 'لم يتم تأكيد البريد الإلكتروني. تحقق من بريدك الإلكتروني';
+                } else if (error.message.includes('CORS') || error.message.includes('Failed to fetch')) {
+                    errorMsg = '⚠️ مشكلة في الاتصال. تأكد من:\n1. اتصال الإنترنت يعمل\n2. إعدادات Supabase صحيحة';
+                } else {
+                    errorMsg = error.message || 'حدث خطأ أثناء تسجيل الدخول';
+                }
+
+                alert('❌ ' + errorMsg);
+            } finally {
+                btn.textContent = 'دخول';
+                btn.disabled = false;
+            }
+        }
+
+        // 🔄 دوال نافذة استعادة كلمة المرور
+        function showForgotPassword() {
+            document.getElementById('forgotPasswordModal').style.display = 'flex';
+        }
+
+        function closeForgotPassword() {
+            document.getElementById('forgotPasswordModal').style.display = 'none';
+        }
+
+        // 📩 إرسال رابط استعادة كلمة المرور
+        async function sendPasswordReset() {
+            const email = document.getElementById('recoveryEmail').value.trim();
+            if (!email) {
+                alert('⚠️ يرجى إدخال البريد الإلكتروني');
+                return;
+            }
+
+            try {
+                const { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+                    redirectTo: window.location.origin + '/recovery.html'
+                });
+
+                if (error) {
+                    throw error;
+                }
+
+                alert('✅ تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني');
+                closeForgotPassword();
+
+            } catch (error) {
+                console.error('Recovery Error:', error);
+                let errorMsg = 'حدث خطأ غير متوقع';
+
+                if (error.message.includes('User not found')) {
+                    errorMsg = 'البريد الإلكتروني غير مسجل';
+                } else {
+                    errorMsg = error.message || 'حدث خطأ أثناء إرسال الرابط';
+                }
+
+                alert('❌ ' + errorMsg);
+            }
+        }
+
+        // إغلاق النوافذ عند النقر خارجها
+        window.onclick = function(event) {
+            const modal = document.getElementById('forgotPasswordModal');
+            if (event.target === modal) closeForgotPassword();
+        }
+
+        // ========================================
+        // 🛒 دوال السلة
+        // ========================================
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge');
+            if (!badge) return;
+
+            try {
+                const cart = JSON.parse(localStorage.getItem('rizqy_cart') || '[]');
+                const count = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            } catch (e) {
+                badge.style.display = 'none';
+            }
+        }
+
+        window.addEventListener('storage', function(e) {
+            if (e.key === 'rizqy_cart' || e.key === 'rizq_cart_sync') {
+                updateCartBadge();
+            }
+        });
+
+        window.addEventListener('load', function() {
+            updateCartBadge();
+        });
+
+        window.addEventListener('pageshow', function() {
+            updateCartBadge();
+        });
+    </script>
+</body>
+</html>

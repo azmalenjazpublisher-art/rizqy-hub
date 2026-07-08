@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلباتي - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+            --success-color: #5cb85c;
+            --danger-color: #d9534f;
+            --warning-color: #f0ad4e;
+            --info-color: #5bc0de;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .back-btn {
+            position: fixed;
+            top: 25px;
+            right: 40px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            padding: 10px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            z-index: 100;
+        }
+        .back-btn:hover { background: var(--primary-color); color: white; }
+
+        .container {
+            max-width: 1000px;
+            margin: 80px auto 40px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .page-header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        /* إحصائيات الطلبات */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .stat-card h3 {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .stat-card .number {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        /* فلترة الطلبات */
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .filter-btn.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* قائمة الطلبات */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+            transition: transform 0.3s;
+            border-right: 5px solid var(--primary-color);
+        }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.12);
+        }
+
+        .order-card.cancelled {
+            border-right-color: var(--danger-color);
+        }
+
+        .order-card.delivered {
+            border-right-color: var(--success-color);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .order-number {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .order-date {
+            color: #888;
+            font-size: 13px;
+        }
+
+        .status-badge {
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status-badge.assigned {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+
+        .status-badge.in_progress {
+            background: #cce5ff;
+            color: #004085;
+        }
+
+        .status-badge.delivered {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-badge.cancelled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        /* منتجات الطلب */
+        .order-items {
+            margin-bottom: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 12px;
+            background: #f9f9f9;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+
+        .order-item img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #f4f1eb;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-details h4 {
+            font-size: 15px;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .item-details .price {
+            color: var(--accent-color);
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .item-quantity {
+            background: var(--primary-color);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        /* ملخص الطلب */
+        .order-summary {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--primary-color);
+            padding-top: 10px;
+            border-top: 1px solid #ddd;
+            margin-top: 10px;
+        }
+
+        /* معلومات المندوب */
+        .driver-info {
+            background: #e8f5e9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            border-right: 4px solid var(--success-color);
+        }
+
+        .driver-info h4 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+
+        .driver-info p {
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 3px;
+        }
+
+        /* حالة فارغة */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+        }
+
+        .empty-state h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .empty-state a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 30px;
+            background: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .empty-state a:hover {
+            background: #3b4d32;
+        }
+
+        /* تحميل */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* رسالة التنبيه */
+        .alert-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .alert-box.show { display: block; }
+        .alert-box.error { border-top: 5px solid #d9534f; }
+        .alert-box.success { border-top: 5px solid #5cb85c; }
+        .alert-box.warning { border-top: 5px solid #f0ad4e; }
+
+        .alert-box h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .alert-box button {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.show { display: block; }
+
+        @media (max-width: 768px) {
+            .container { padding: 20px; margin-top: 100px; }
+            .page-header h1 { font-size: 24px; }
+            .order-header { flex-direction: column; align-items: flex-start; }
+            .order-item { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">← العودة للرئيسية</a>
+
+    <div class="container">
+        <div class="page-header">
+            <h1> طلباتي</h1>
+            <p>تتبع حالة طلباتك ومعلومات التوصيل</p>
+        </div>
+
+        <div id="ordersContent">
+            <p class="loading">🔄 جاري تحميل طلباتك...</p>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="alert-box" id="alertBox">
+        <h3 id="alertTitle">تنبيه</h3>
+        <p id="alertMessage"></p>
+        <button onclick="closeAlert()">حسناً</button>
+    </div>
+
+    <!--  مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 🔑 إعدادات Supabase
+        const SUPABASE_URL = 'https://yzqahzwqwcxypryzarxk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_qW1pvyy3MogDo5ZgK8JQQQ_w3mO0phv';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        let allOrders = [];
+        let currentFilter = 'all';
+
+        window.addEventListener('load', async function() {
+            await loadOrders();
+        });
+
+        // تحميل طلبات المستخدم
+        async function loadOrders() {
+            const container = document.getElementById('ordersContent');
+            
+            try {
+                // التحقق من تسجيل الدخول
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                
+                if (!session) {
+                    container.innerHTML = `
+                        <div class="empty-state">
+                            <h2>️ يجب تسجيل الدخول</h2>
+                            <p>سجّل دخولك لعرض طلباتك</p>
+                            <a href="login.html">تسجيل الدخول</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const userId = session.user.id;
+
+                // جلب الطلبات مع بيانات المندوب
+                const { data: orders, error } = await supabaseClient
+                    .from('orders')
+                    .select(`
+                        *,
+                        delivery_drivers (
+                            full_name,
+                            phone,
+                            vehicle_type,
+                            plate_number
+                        )
+                    `)
+                    .eq('user_id', userId)
+                    .order('created_at', { ascending: false });
+
+                if (error) throw error;
+
+                allOrders = orders || [];
+                displayOrders();
+
+            } catch (err) {
+                console.error('❌ خطأ:', err);
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>⚠️ خطأ في تحميل الطلبات</h2>
+                        <p>${err.message}</p>
+                        <a href="index.html">العودة للرئيسية</a>
+                    </div>
+                `;
+            }
+        }
+
+        // عرض الطلبات
+        function displayOrders() {
+            const container = document.getElementById('ordersContent');
+
+            if (allOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2> لا توجد طلبات</h2>
+                        <p>لم تقم بأي طلبات بعد. ابدأ التسوق الآن!</p>
+                        <a href="index.html">تصفح المنتجات</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // فلترة الطلبات
+            let filteredOrders = allOrders;
+            if (currentFilter !== 'all') {
+                filteredOrders = allOrders.filter(o => o.delivery_status === currentFilter);
+            }
+
+            if (filteredOrders.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <h2>لا توجد طلبات في هذه الفئة</h2>
+                        <a href="index.html">تصفح المنتجات</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // إحصائيات
+            const stats = {
+                total: allOrders.length,
+                pending: allOrders.filter(o => o.delivery_status === 'pending').length,
+                active: allOrders.filter(o => ['assigned', 'in_progress'].includes(o.delivery_status)).length,
+                delivered: allOrders.filter(o => o.delivery_status === 'delivered').length,
+                cancelled: allOrders.filter(o => o.delivery_status === 'cancelled').length
+            };
+
+            let html = `
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <h3>إجمالي الطلبات</h3>
+                        <div class="number">${stats.total}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>قيد الانتظار</h3>
+                        <div class="number">${stats.pending}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>قيد التوصيل</h3>
+                        <div class="number">${stats.active}</div>
+                    </div>
+                    <div class="stat-card">
+                        <h3>تم التوصيل</h3>
+                        <div class="number">${stats.delivered}</div>
+                    </div>
+                </div>
+
+                <div class="filters">
+                    <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="setFilter('all')">الكل (${stats.total})</button>
+                    <button class="filter-btn ${currentFilter === 'pending' ? 'active' : ''}" onclick="setFilter('pending')">قيد الانتظار (${stats.pending})</button>
+                    <button class="filter-btn ${currentFilter === 'assigned' || currentFilter === 'in_progress' ? 'active' : ''}" onclick="setFilter('active')">قيد التوصيل (${stats.active})</button>
+                    <button class="filter-btn ${currentFilter === 'delivered' ? 'active' : ''}" onclick="setFilter('delivered')">تم التوصيل (${stats.delivered})</button>
+                    <button class="filter-btn ${currentFilter === 'cancelled' ? 'active' : ''}" onclick="setFilter('cancelled')">ملغي (${stats.cancelled})</button>
+                </div>
+
+                <div class="orders-list">
+            `;
+
+            filteredOrders.forEach(order => {
+                html += renderOrderCard(order);
+            });
+
+            html += '</div>';
+            container.innerHTML = html;
+        }
+
+        // عرض بطاقة طلب
+        function renderOrderCard(order) {
+            const statusClass = order.delivery_status || 'pending';
+            const statusText = getStatusText(statusClass);
+            const date = new Date(order.created_at).toLocaleDateString('ar-SA', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // المنتجات (من JSON أو من حقل منفصل)
+            let items = [];
+            try {
+                items = order.items ? (typeof order.items === 'string' ? JSON.parse(order.items) : order.items) : [];
+            } catch (e) {
+                items = [];
+            }
+
+            let itemsHtml = '';
+            if (items.length > 0) {
+                itemsHtml = '<div class="order-items">';
+                items.forEach(item => {
+                    const imageUrl = item.image || 'images/categories/cat-food.webp';
+                    itemsHtml += `
+                        <div class="order-item">
+                            <img src="${imageUrl}" alt="${item.name}" onerror="this.src='images/categories/cat-food.webp'">
+                            <div class="item-details">
+                                <h4>${item.name}</h4>
+                                <div class="price">${parseFloat(item.price).toFixed(2)} ر.س</div>
+                            </div>
+                            <div class="item-quantity">×${item.quantity}</div>
+                        </div>
+                    `;
+                });
+                itemsHtml += '</div>';
+            }
+
+            // معلومات المندوب
+            let driverHtml = '';
+            if (order.delivery_drivers) {
+                const driver = order.delivery_drivers;
+                driverHtml = `
+                    <div class="driver-info">
+                        <h4>🚗 معلومات المندوب</h4>
+                        <p><strong>الاسم:</strong> ${driver.full_name || '-'}</p>
+                        <p><strong>الجوال:</strong> ${driver.phone || '-'}</p>
+                        <p><strong>المركبة:</strong> ${driver.vehicle_type || '-'} - ${driver.plate_number || '-'}</p>
+                    </div>
+                `;
+            }
+
+            const totalAmount = order.total_amount || 0;
+
+            return `
+                <div class="order-card ${statusClass}">
+                    <div class="order-header">
+                        <div>
+                            <div class="order-number">📦 طلب #${order.id}</div>
+                            <div class="order-date">📅 ${date}</div>
+                        </div>
+                        <span class="status-badge ${statusClass}">${statusText}</span>
+                    </div>
+
+                    ${itemsHtml}
+
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span>عدد المنتجات:</span>
+                            <span>${items.length} منتج</span>
+                        </div>
+                        ${order.shipping_address ? `
+                            <div class="summary-row">
+                                <span>📍 العنوان:</span>
+                                <span>${order.shipping_address}</span>
+                            </div>
+                        ` : ''}
+                        <div class="summary-row total">
+                            <span>الإجمالي:</span>
+                            <span>${parseFloat(totalAmount).toFixed(2)} ر.س</span>
+                        </div>
+                    </div>
+
+                    ${driverHtml}
+                </div>
+            `;
+        }
+
+        // نص حالة الطلب
+        function getStatusText(status) {
+            const texts = {
+                'pending': ' قيد الانتظار',
+                'assigned': '✅ تم تعيين مندوب',
+                'in_progress': '🚗 في الطريق',
+                'delivered': '🎉 تم التوصيل',
+                'cancelled': '❌ ملغي'
+            };
+            return texts[status] || status;
+        }
+
+        // تعيين الفلتر
+        function setFilter(filter) {
+            currentFilter = filter;
+            displayOrders();
+        }
+
+        // إغلاق التنبيه
+        function closeAlert() {
+            document.getElementById('alertBox').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            const overlay = document.getElementById('overlay');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
+            
+            alertBox.className = 'alert-box show ' + type;
+            overlay.classList.add('show');
+            
+            if (type === 'success') alertTitle.textContent = 'نجح!';
+            else if (type === 'error') alertTitle.textContent = 'خطأ';
+            else if (type === 'warning') alertTitle.textContent = 'تنبيه';
+            
+            alertMessage.textContent = message;
+        }
+    </script>
+</body>
+</html>

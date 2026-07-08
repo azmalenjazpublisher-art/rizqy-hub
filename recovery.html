@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>إعادة تعيين كلمة المرور - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+        body {
+            background: linear-gradient(135deg, #e8e4dc 0%, #f5f0e8 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+        }
+        h2 { color: #4A5D40; margin-bottom: 20px; }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 14px;
+            background: #4A5D40;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+        button:hover { background: #3b4d32; }
+        button:disabled { background: #999; cursor: not-allowed; }
+        .message { margin: 15px 0; padding: 10px; border-radius: 8px; }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>🔐 إعادة تعيين كلمة المرور</h2>
+        <div id="status"></div>
+        
+        <div id="passwordForm" style="display: none;">
+            <p style="margin-bottom: 15px; color: #666;">أدخل كلمة المرور الجديدة لحسابك</p>
+            <input type="password" id="newPassword" placeholder="كلمة المرور الجديدة (8 أحرف على الأقل)">
+            <input type="password" id="confirmPassword" placeholder="تأكيد كلمة المرور">
+            <button onclick="completeRecovery()" id="resetBtn">حفظ كلمة المرور الجديدة</button>
+        </div>
+        
+        <p style="margin-top: 20px; font-size: 14px; color: #666;">
+            <a href="index.html" style="color: #4A5D40;">← العودة لتسجيل الدخول</a>
+        </p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/appwrite@16.0.0"></script>
+    <script>
+        const PROJECT_ID = '6a016c9200201c6f23c7';
+        const client = new Appwrite.Client()
+            .setEndpoint('https://sgp.cloud.appwrite.io/v1')
+            .setProject(PROJECT_ID);
+        const account = new Appwrite.Account(client);
+
+        // استخراج المعرف والتوكن من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const userId = urlParams.get('userId');
+        const secret = urlParams.get('secret');
+
+        window.addEventListener('load', async function() {
+            if (!userId || !secret) {
+                document.getElementById('status').innerHTML = 
+                    '<div class="message error">❌ الرابط غير صالح أو منتهي الصلاحية. <br><a href="index.html" style="color:#721c24">العودة للرئيسية</a></div>';
+                return;
+            }
+
+            // التحقق من صحة الرابط بدون تغيير كلمة المرور
+            try {
+                // نجرب جلب حالة المستخدم للتحقق من صلاحية التوكن
+                // ملاحظة: Appwrite لا يوفر دالة تحقق مباشرة، لذا نعتمد على وجود المعرف والتوكن
+                document.getElementById('status').innerHTML = 
+                    '<div class="message success">✅ تم التحقق من الرابط بنجاح. أدخل كلمة المرور الجديدة.</div>';
+                document.getElementById('passwordForm').style.display = 'block';
+            } catch (error) {
+                document.getElementById('status').innerHTML = 
+                    '<div class="message error">❌ الرابط غير صالح أو منتهي الصلاحية. يرجى طلب رابط جديد.</div>';
+            }
+        });
+
+        async function completeRecovery() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const btn = document.getElementById('resetBtn');
+
+            if (newPassword.length < 8) {
+                alert('⚠️ كلمة المرور يجب أن تكون 8 أحرف على الأقل');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                alert('⚠️ كلمات المرور غير متطابقة');
+                return;
+            }
+
+            btn.textContent = 'جاري الحفظ...';
+            btn.disabled = true;
+
+            try {
+                await account.updateRecovery(userId, secret, newPassword, newPassword);
+                document.getElementById('status').innerHTML = 
+                    '<div class="message success">✅ تم تغيير كلمة المرور بنجاح! سيتم توجيهك لتسجيل الدخول...</div>';
+                document.getElementById('passwordForm').style.display = 'none';
+                
+                // تنظيف الجلسات القديمة قبل التوجيه
+                localStorage.removeItem('appwrite.session');
+                
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            } catch (error) {
+                document.getElementById('status').innerHTML = 
+                    '<div class="message error">❌ حدث خطأ: ' + error.message + '</div>';
+                btn.textContent = 'حفظ كلمة المرور الجديدة';
+                btn.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>

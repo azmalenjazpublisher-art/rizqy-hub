@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل مندوب توصيل - رزقي هب</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;500;700&display=swap');
+
+        :root {
+            --primary-color: #4A5D40;
+            --accent-color: #C5A065;
+            --text-dark: #333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+
+        body {
+            background-image: url('bg.jpg');
+            background-size: cover;
+            background-position: center 35%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-color: #e8e4dc;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 25px;
+            right: 40px;
+            display: flex;
+            gap: 20px;
+            z-index: 10;
+            align-items: center;
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: white !important;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .nav-btn:hover {
+            background: #3b4d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 120px 20px 40px;
+        }
+
+        .register-container {
+            max-width: 650px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .register-container h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 32px;
+        }
+
+        .register-container > p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            color: var(--primary-color);
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent-color);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #fafafa;
+            font-size: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(74, 93, 64, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background: #3b4d32;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .submit-btn:disabled {
+            background: #999;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* رسالة التنبيه */
+        .alert-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .alert-box.show { display: block; }
+        .alert-box.error { border-top: 5px solid #d9534f; }
+        .alert-box.success { border-top: 5px solid #5cb85c; }
+        .alert-box.warning { border-top: 5px solid #f0ad4e; }
+
+        .alert-box h3 {
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .alert-box button {
+            margin-top: 20px;
+            padding: 10px 30px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 999;
+        }
+
+        .overlay.show { display: block; }
+
+        .info-box {
+            background: #f8f9fa;
+            border-right: 4px solid var(--accent-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 14px;
+            color: #555;
+        }
+
+        @media (max-width: 768px) {
+            .navbar { right: 20px; gap: 10px; }
+            .form-row { grid-template-columns: 1fr; }
+            .register-container { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-btn">الرئيسية</a>
+        <a href="login.html" class="nav-btn">تسجيل الدخول</a>
+    </nav>
+
+    <div class="container">
+        <div class="register-container">
+            <h2>🚗 تسجيل مندوب توصيل</h2>
+            <p>انضم لفريق مناديب التوصيل في رزقي هب</p>
+
+            <div class="info-box">
+                <strong>ℹ️ ملاحظة مهمة:</strong><br>
+                سيتم مراجعة بياناتك والتحقق منها قبل تفعيل حسابك. تأكد من صحة المعلومات المدخلة.
+            </div>
+
+            <form id="driverRegisterForm">
+                <!-- البيانات الشخصية -->
+                <div class="form-section">
+                    <h3 class="section-title">البيانات الشخصية</h3>
+                    
+                    <div class="form-group">
+                        <label>الاسم الكامل *</label>
+                        <input type="text" id="fullName" placeholder="أدخل اسمك الثلاثي" required>
+                    </div>
+
+                    <!-- ✅ تم إضافة حقل البريد الإلكتروني هنا -->
+                    <div class="form-group">
+                        <label>البريد الإلكتروني *</label>
+                        <input type="email" id="email" placeholder="example@email.com" required>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>رقم الهوية / الإقامة *</label>
+                            <input type="text" id="idNumber" placeholder="10XXXXXXXX" pattern="[0-9]{10}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label>رقم الجوال *</label>
+                            <input type="tel" id="phone" placeholder="05XXXXXXXX" pattern="[0-9]{10}" required>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- بيانات المركبة -->
+                <div class="form-section">
+                    <h3 class="section-title">بيانات المركبة</h3>
+
+                    <div class="form-group">
+                        <label>نوع السيارة *</label>
+                        <select id="vehicleType" required>
+                            <option value="">اختر نوع المركبة</option>
+                            <option value="سيارة">سيارة</option>
+                            <option value="دراجة نارية">دراجة نارية</option>
+                            <option value="شاحنة صغيرة">شاحنة صغيرة</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>موديل السيارة *</label>
+                        <input type="text" id="vehicleModel" placeholder="مثال: تويوتا كامري 2020" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>رقم اللوحة *</label>
+                        <input type="text" id="plateNumber" placeholder="مثال: أ ب ج 1234" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">إرسال طلب التسجيل</button>
+                
+                <a href="index.html" class="back-link">← العودة للرئيسية</a>
+            </form>
+        </div>
+    </div>
+
+    <!-- رسالة التنبيه -->
+    <div class="overlay" id="overlay"></div>
+    <div class="alert-box" id="alertBox">
+        <h3 id="alertTitle">تنبيه</h3>
+        <p id="alertMessage"></p>
+        <button onclick="closeAlert()">حسناً</button>
+    </div>
+
+    <!-- 🟢 مكتبة Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // 🔑 إعدادات Supabase
+        const SUPABASE_URL = 'https://yzqahzwqwcxypryzarxk.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_qW1pvyy3MogDo5ZgK8JQQQ_w3mO0phv';
+        
+        // ⚙️ تهيئة Supabase
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // التحقق من تسجيل الدخول
+        window.addEventListener('load', async function() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (!session) {
+                showAlert('warning', '⚠️ يجب تسجيل الدخول أولاً لتسجيل كمندوب توصيل');
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 2000);
+            }
+        });
+
+        // 📝 معالجة التسجيل
+        document.getElementById('driverRegisterForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const btn = document.getElementById('submitBtn');
+            const originalText = btn.textContent;
+            btn.textContent = 'جاري الإرسال...';
+            btn.disabled = true;
+
+            try {
+                // التحقق من تسجيل الدخول
+                const { data: { user } } = await supabaseClient.auth.getUser();
+                
+                if (!user) {
+                    throw new Error('يجب تسجيل الدخول أولاً');
+                }
+
+                // جمع البيانات
+                const driverData = {
+                    user_id: user.id,
+                    email: document.getElementById('email').value.trim(),
+                    full_name: document.getElementById('fullName').value.trim(),
+                    id_number: document.getElementById('idNumber').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    vehicle_type: document.getElementById('vehicleType').value,
+                    vehicle_model: document.getElementById('vehicleModel').value.trim(),
+                    plate_number: document.getElementById('plateNumber').value.trim(),
+                    is_approved: false,
+                    is_active: true
+                };
+
+                // التحقق من عدم تكرار رقم الهوية أو اللوحة
+                const { data: existingDriver } = await supabaseClient
+                    .from('delivery_drivers')
+                    .select('id')
+                    .or(`id_number.eq.${driverData.id_number},plate_number.eq.${driverData.plate_number}`)
+                    .single();
+
+                if (existingDriver) {
+                    throw new Error('هذا المندوب مسجل مسبقاً (رقم الهوية أو اللوحة مستخدم)');
+                }
+
+                // حفظ البيانات في قاعدة البيانات
+                const { data, error } = await supabaseClient
+                    .from('delivery_drivers')
+                    .insert([driverData])
+                    .select();
+
+                if (error) {
+                    throw error;
+                }
+
+                // نجاح التسجيل
+                showAlert('success', '✅ تم إرسال طلب التسجيل بنجاح!\nسيتم مراجعة بياناتك والتواصل معك قريباً.');
+                
+                // إعادة تعيين النموذج
+                document.getElementById('driverRegisterForm').reset();
+                
+            } catch (error) {
+                console.error('Registration Error:', error);
+                let errorMsg = 'حدث خطأ غير متوقع';
+                
+                if (error.message.includes('duplicate')) {
+                    errorMsg = '❌ رقم الهوية أو رقم اللوحة مسجل مسبقاً';
+                } else if (error.message.includes('Invalid phone')) {
+                    errorMsg = '❌ رقم الجوال غير صحيح';
+                } else if (error.code === 'PGRST301') {
+                    errorMsg = '❌ خطأ في الصلاحيات. تأكد من تسجيل الدخول';
+                } else {
+                    errorMsg = '❌ ' + (error.message || 'حدث خطأ أثناء التسجيل');
+                }
+                
+                showAlert('error', errorMsg);
+            } finally {
+                btn.textContent = originalText;
+                btn.disabled = false;
+            }
+        });
+
+        // دالة عرض التنبيهات
+        function showAlert(type, message) {
+            const alertBox = document.getElementById('alertBox');
+            const overlay = document.getElementById('overlay');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
+            
+            alertBox.className = 'alert-box show ' + type;
+            overlay.classList.add('show');
+            
+            if (type === 'success') {
+                alertTitle.textContent = 'نجح!';
+            } else if (type === 'error') {
+                alertTitle.textContent = 'خطأ';
+            } else if (type === 'warning') {
+                alertTitle.textContent = 'تنبيه';
+            }
+            
+            alertMessage.textContent = message;
+        }
+
+        function closeAlert() {
+            document.getElementById('alertBox').classList.remove('show');
+            document.getElementById('overlay').classList.remove('show');
+        }
+    </script>
+</body>
+</html>
